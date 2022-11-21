@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookdetail">
+<!-- 해당 책 서평 리스트 출력(최신순) -->
+<!-- <select id="" parameterType="" resultType="">
+ 	<![CDATA[
+
+	]]>
+</select> -->
+
+	<!-- 해당 책 서평 리스트 출력(최신순) -->
+	<select id="reviewListLatest" parameterType="int" resultType="BookdetailVo">
+	 	<![CDATA[
+			select  r.book_no bookNo,
+			        r.review_no reviewNo,
+			        r.emo_name emoName,
+			        b.book_title bookTitle,
+			        r.nickname nickName,
+			        to_char(r.review_date, 'yyyy/mm/dd') reviewDate,
+			        r.review_content reviewContent,
+			        r.user_no userNo,
+			        NVL(lt.likecnt, 0) likecnt
+			from   (select  r.review_no,
+			                r.book_no,
+			                e.emo_no,
+			                e.emo_name,
+			                r.user_no,
+			                u.nickname,
+			                u.email,
+			                r.review_date,
+			                r.review_content
+			        from   review r, style s, emotion e, users u
+			        where  e.emo_no = s.emo_no
+			        and    r.style_no = s.style_no
+			        and    r.user_no = u.user_no) r, books b, (select  review_no,
+			                                                            count(review_no) likecnt
+			                                                    from review_user 
+			                                                    group by review_no)lt
+			where   r.book_no = b.book_no 
+			and     lt.review_no(+) = r.review_no
+			and     b.book_no = #{bookNo}
+			order by reviewDate desc
+		]]>
+	</select>
+	
+	
+	<!-- 해당 책 정보 --> 
+	<select id="getbookVo" parameterType="int" resultType="BookdetailVo">
+	 	<![CDATA[
+			select  book_title bookTitle,
+			        author author,
+			        cover_url coverUrl,
+			        book_url bookUrl,
+			        book_no bookNo
+			from books
+			where book_no = #{bookNo}
+		]]>
+	</select>
+	
+	
+	<!-- 해당 서평의 총 수 --> 
+	<select id="bookReviewCount" parameterType="int" resultType="int">
+	 	<![CDATA[
+			select count(review_no)
+			from books, review
+			where books.book_no = review.book_no
+			and books.book_no = #{bookNo}
+		]]>
+	</select>
+	
+	
+	<!-- 로딩시 북마크 체크 -->
+	<select id="bookmarkCheck" parameterType="map" resultType="int">
+	 	<![CDATA[
+			select count(book_user_no)
+			from book_user
+			where user_no = #{userNo}
+			and book_no = #{bookNo}
+		]]>
+	</select>
+	
+	
+	<!-- 북마크 추가 -->
+	<insert id="bookmarkInsert" parameterType="map">
+	 	<![CDATA[
+			insert into book_user
+			values (seq_book_user_no.nextval,
+					#{bookNo},
+					#{userNo},
+					sysdate
+					)
+		]]>
+	</insert>
+	
+	<!-- 북마크 제거 -->
+	<delete id="bookmarkDelete" parameterType="map">
+	 	<![CDATA[
+			delete from book_user
+			where user_no = #{userNo}
+			and book_no = #{bookNo}
+		]]>
+	</delete>
+	
+	<!-- 해당 책 서평 리스트 출력(인기순) -->
+	<select id="reviewListBest" parameterType="String" resultType="BookdetailVo">
+	 	<![CDATA[
+			select rownum rn,
+			       ot.book_no bookNo,
+			       ot.book_title bookTitle,
+			       ot.review_no reviewNo,
+			       ot.review_content reviewContent,
+			       to_char(ot.review_date, 'yyyy/mm/dd') reviewDate,
+			       ot.style_no styleNo,
+			       ot.emo_name emoName,
+			       ot.user_no userNo,
+			       ot.nickname nickname,
+			       NVL(ot.likecnt,0) likecnt
+			from (select rt.book_no,
+			             rt.book_title,
+			             rt.review_no,
+			             rt.review_content,
+			             rt.review_date,
+			             rt.style_no,
+			             rt.emo_name,
+			             rt.user_no,
+			             rt.nickname,
+			             rt.likecnt
+			        from (select  bt.book_no,
+			                      bt.book_title,
+			                      bt.review_no,
+			                      bt.review_content,
+			                      bt.review_date,
+			                      bt.style_no,
+			                      bt.emo_name,
+			                      bt.user_no,
+			                      bt.nickname,
+			                      lt.likecnt
+			                from(select b.book_no,
+			                            b.book_title,
+			                            r.review_no,
+			                            r.review_content,
+			                            r.review_date,
+			                            s.style_no,
+			                            e.emo_name,
+			                            u.user_no,
+			                            u.nickname
+			                    from books b, review r, style s, emotion e, users u
+			                    where b.book_no = r.book_no
+			                    and r.style_no = s.style_no
+			                    and s.emo_no = e.emo_no
+			                    and r.user_no = u.user_no
+			                    and b.book_no = #{bookNo}) bt,(select  review_no,
+			                                                                count(review_no) likecnt
+			                                                        from review_user
+			                                                        group by review_no) lt
+			                where bt.review_no = lt.review_no(+)) rt
+			        order by rt.likecnt asc) ot
+		]]>
+	</select>
+	
+	<!-- 서평 삭제 -->
+	<delete id="reviewDelete" parameterType="int">
+	 	<![CDATA[
+			delete from review
+			where review_no = #{reviewNo}
+		]]>
+	</delete>
+	
+	
+	
+
+
+
+</mapper>

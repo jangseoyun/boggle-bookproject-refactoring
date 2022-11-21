@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="help">
+
+
+	<!-- <select id="" resultType="com.javaex.vo.HelpVo">
+	 	<![CDATA[
+	 	]]>
+	</select> -->
+	
+	<!-- 글 1개 가져오기  -->
+	<select id="selectOne" resultType="com.javaex.vo.HelpVo">
+	 	<![CDATA[
+			select  h.no, 
+					h.title,
+			        h.content,
+			        h.user_no userNo,
+			        to_char(h.reg_date, 'YYYY-MM-DD HH:MI:SS') regDate
+			from help h, users u
+			where h.user_no = u.user_no
+			and h.no = #{no}
+		]]>
+	</select>
+	
+	
+	<select id="selectList" resultType="com.javaex.vo.HelpVo">
+	 	<![CDATA[
+		 	select  h.no, 
+			        h.title,
+			        h.content,
+					to_char(h.reg_date, 'YYYY-MM-DD HH:MI:SS') regDate, 
+					h.user_no userNo,
+					u.user_name userName
+			from help h, users u
+			where h.user_no = u.user_no
+			order by no desc
+	 	]]>
+	</select>
+
+	<!-- ///// -->
+	<select id="modifySelect" resultType="com.javaex.vo.HelpVo" parameterType="int">
+	 	<![CDATA[
+			select  h.title title,
+					h.content content
+			from help h, users u
+			where h.user_no = u.user_no
+			and h.no = #{no}
+		]]>
+	</select>
+	
+	<select id="select" resultType="com.javaex.vo.HelpVo">
+	 	<![CDATA[
+			select  h.no, 
+					h.title,
+			        h.content,
+			        h.user_no userNo,
+			        to_char(h.reg_date, 'YYYY-MM-DD HH:MI:SS') regDate
+			from help h, users u
+			where h.user_no = u.user_no
+			and h.no = #{no}
+		]]>
+	</select>
+	
+	<!-- 글저장 -->
+	<insert id="insert" parameterType="com.javaex.vo.HelpVo">
+		<![CDATA[
+			insert into help
+			values ( seq_help_no.nextval, 
+					 #{title}, 
+					 #{content}, 
+					 sysdate, 
+					 #{userNo} )
+		]]>
+	</insert>
+	
+	<!-- 글수정 자신의 글만 수정되도록 조건절에 usr_no도 비교 -->
+	<update id="update" parameterType="com.javaex.vo.HelpVo">
+		<![CDATA[
+			update help
+			set title = #{title},
+			    content = #{content}
+			where no = #{no}
+		]]>
+	</update>
+	
+	<!-- 글삭제 : 자신의 글만 삭제되도록 조건절에 usr_no도 비교 -->
+	<delete id="delete" parameterType="com.javaex.vo.HelpVo">
+		<![CDATA[
+			delete from help 
+			where no = #{no}
+			and user_no = #{userNo}
+		]]>
+	</delete>
+
+
+
+</mapper>

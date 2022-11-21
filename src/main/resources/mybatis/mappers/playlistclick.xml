@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="playlistclick">
+
+	<!-- likelistclick -->
+	<select id="likelistclick" resultType="PlaylistClickVo" parameterType="int">
+		<![CDATA[
+			select  p.likeuser,
+        p.playlist_no playlistNo,
+        p.playlist_date playlistDate,
+        p.playlist_name playlistName,
+        p.emo_no emoNo,
+        p.makeuser userNo,
+        p.nickname
+from (select  up.user_no likeuser,
+                up.playlist_no,
+                p.playlist_date,
+                p.playlist_name,
+                p.emo_no,
+                p.user_no makeuser,
+                u.nickname
+        from user_playlist up, playlist p, users u
+        where up.playlist_no = p.playlist_no
+        and p.user_no = u.user_no
+        and up.user_no = #{userNo}) p
+		]]>
+
+	</select>
+	
+		<!-- popularplay -->
+	<select id="popularplayclick" resultType="PlaylistClickVo">
+		<![CDATA[
+			select  p.likeuser,
+        			p.playlist_no playlistNo,
+        			p.playlist_name playlistName,
+        			p.emo_no emoNo,
+        			p.makeuser userNo,
+        			p.nickname
+			from (select  up.user_no likeuser,
+        					up.playlist_no,
+        					p.playlist_date,
+        					p.playlist_name,
+        					p.emo_no,
+        					p.user_no makeuser,
+        					u.nickname,
+        					cnt.likecnt
+					from user_playlist up, playlist p, users u, (select  playlist_no,
+                                                    					count(playlist_no) likecnt
+                                            					from user_playlist
+                                            					group by playlist_no) cnt
+					where up.playlist_no = p.playlist_no
+					and p.user_no = u.user_no
+					and p.playlist_no = cnt.playlist_no
+					ORDER BY cnt.likecnt desc) p
+		]]>
+
+	</select>
+	
+	<!-- 특정유저가 만든 플레이리스트 목록 -->
+	<!-- makelist -->
+	<select id="makelistclick" resultType="PlaylistClickVo" parameterType="int">
+		<![CDATA[
+			select  p.likeuser,
+        			p.playlist_no playlistNo,
+        			p.playlist_name playlistName,
+        			p.emo_no emoNo,
+        			p.makeuser userNo,
+        			p.nickname
+			from (select  up.user_no likeuser,
+        				up.playlist_no,
+        				p.playlist_date,
+        				p.playlist_name,
+        				p.emo_no,
+        				p.user_no makeuser,
+        				u.nickname,
+        				cnt.likecnt
+					from user_playlist up, playlist p, users u, (select  playlist_no,
+                    	                                				count(playlist_no) likecnt
+                                            					from user_playlist
+                                            					group by playlist_no) cnt
+					where up.playlist_no = p.playlist_no
+					and p.user_no = u.user_no
+					and p.playlist_no = cnt.playlist_no
+					and p.user_no = #{userNo}) p
+		]]>
+
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="emotion">
+
+	<!-- ResultMap -->
+	<resultMap id="RReviewVo" type="map">
+		<result column="review_no" property="reviewNo" />
+		<result column="book_no" property="bookNo" />
+		<result column="review_content" property="reviewContent" />
+		<result column="nickname" property="nickname" />
+		<result column="style_name" property="styleName" />
+		<result column="imgurl" property="imgurl" />
+		<result column="videourl" property="videourl" />
+		<result column="emo_no" property="emoNo" />
+		
+		<result column="user_no" property="userNo" />
+		<result column="style_no" property="styleNo" />
+		<result column="review_date" property="reviewDate" />
+		<result column="emo_name" property="emoName" />
+	</resultMap>	
+
+	<resultMap id="emotionMap" type="map">
+        <result property="emoName" column="emo_name" />
+        <result property="emoNo" column="emo_no" />
+        <result property="totalReviewCnt" column="totalReviewCnt" />
+    </resultMap> 
+
+	<select id="getEmotion" resultMap="emotionMap">
+		<![CDATA[
+			select et.emo_name,
+			       emo_no,
+			       totalReviewCnt
+			from emotion et, (select count(review_no) totalReviewCnt,
+			                       emo_name
+			                from review, emotion, style
+			                where review.style_no = style.style_no
+			                and style.emo_no = emotion.emo_no
+			                group by emo_name) ct
+			where et.emo_name = ct.emo_name(+)
+		]]>
+	</select>
+
+	<select id="getReviewListByEmo" parameterType="int" resultMap="RReviewVo">
+		<![CDATA[
+			select review_content,
+			       review_no,
+			       nickname,
+			       book_no,
+			       style_name, 
+			       imgurl,
+			       videourl,
+			       emo_no
+			from(select review_content,
+			           review_no,
+			           nickname,
+			           review.book_no,
+			           style_name, 
+			           imgurl,
+			           videourl,
+			           emotion.emo_no
+			    from review, users, style, emotion
+			    where users.user_no = review.user_no
+			    and review.style_no = style.style_no
+			    and style.emo_no = emotion.emo_no
+			    and emotion.emo_no = #{emoNo}
+			    order by DBMS_RANDOM.RANDOM)
+			where rownum < 20
+		]]>
+	</select>
+	
+	<select id="getReviewListByPly" parameterType="int" resultMap="RReviewVo">
+		<![CDATA[
+			select review_content,
+			       review_no,
+			       nickname,
+			       book_no,
+			       style_name,
+			       emo_name
+			from(select review_content,
+			           tt.review_no,
+			           nickname,
+			           book_no,
+			           style_name,
+			           emo_name
+			    from playlist_review, (select review_content,
+			                                   review_no,
+			                                   nickname,
+			                                   book_no,
+			                                   style_name,
+			                                   emo_name
+			                            from users, review, emotion, style
+			                            where users.user_no = review.user_no
+			                            and review.style_no = style.style_no
+			                            and style.emo_no = emotion.emo_no) tt
+			    where playlist_review.review_no = tt.review_no
+			    and playlist_no = #{playlistNo}
+			    order by DBMS_RANDOM.RANDOM)
+			where rownum < 20
+		]]>
+	</select>
+	
+	<select id="getMusicListByEmo" parameterType="int" resultType="MusicVo">
+		<![CDATA[
+			select music_title musicTitle,
+			       artist, 
+			       music_path musicPath
+			from(select music_title,
+			           artist, 
+			           music_path 
+			    from music, emotion
+			    where music.emo_no = emotion.emo_no
+			    and music.emo_no = #{emoNo}
+			    order by DBMS_RANDOM.RANDOM)
+			where rownum < 7
+		]]>
+	</select>
+	
+	<select id="getMusicListByPly" parameterType="int" resultType="MusicVo">
+		<![CDATA[
+			select music_title musicTitle,
+			       music_path musicPath,
+			       artist
+			from (select music_title,
+			               music_path,
+			               artist,
+			               music.emo_no
+			        from music, playlist
+			        where music.emo_no = playlist.emo_no
+			        and playlist_no = #{playlistNo}
+			        order by DBMS_RANDOM.RANDOM)
+			where rownum < 7
+		]]>
+	</select>
+	
+	<select id="getTotalEmoTagCnt" resultType="int">
+		<![CDATA[
+			select emo_no
+			from(select totalCnt, 
+			            emo_no
+			    from (select count(review_no) totalCnt,
+			               emotion.emo_no
+			        from review, emotion, style
+			        where review.style_no = style.style_no
+			        and style.emo_no = emotion.emo_no
+			        group by emotion.emo_no)
+			    where totalCnt > 0
+			    order by dbms_random.value)
+			where rownum = 1
+		]]>
+	</select>
+	
+	<!--************** 플레이리스트 목록 가져오기 ****************-->
+	<!-- (1) 내가 만든 플리 -->
+	<select id="getMyPlaylist-1" parameterType="int" resultType="PlaylistVo">
+		<![CDATA[
+			select playlist_name playlistName,
+			       playlist_no playlistNo,
+			       emo_name emoName,
+			       nickname,
+			       playlist.user_no userNo
+			from playlist, emotion, users
+			where playlist.user_no = users.user_no
+			and emotion.emo_no = playlist.emo_no
+			and users.user_no = #{userNo}
+		]]>
+	</select>
+	
+	<!-- (2) 좋아요한 플리 -->
+	<select id="getMyPlaylist-2" parameterType="int" resultType="PlaylistVo">
+		<![CDATA[
+			select playlist_name playlistName,
+			       playlist.playlist_no playlistNo,
+			       emo_name emoName,
+			       nickname,
+			       playlist.user_no userNo
+			from user_playlist, playlist, emotion, users
+			where user_playlist.playlist_no = playlist.playlist_no
+			and playlist.emo_no = emotion.emo_no
+			and playlist.user_no = users.user_no
+			and user_playlist.user_no = #{userNo}
+			and playlist.user_no not in(#{userNo})
+		]]>
+	</select>
+	
+	<insert id="addNewPlaylist" parameterType="PlaylistVo">
+		<selectKey keyProperty="playlistNo" resultType="int" order="BEFORE">
+			select seq_playlist_no.nextval from dual
+		</selectKey>
+	
+		<![CDATA[
+			insert into playlist
+			values(#{playlistNo}, #{userNo}, sysdate, #{playlistName}, #{emoNo})
+		]]>
+	</insert>
+	
+	<insert id="addNewPlaylistAtUser" parameterType="PlaylistVo">
+		<![CDATA[
+			insert into user_playlist
+			values(seq_user_playlist_no.nextval, #{userNo}, #{playlistNo})
+		]]>
+	</insert>
+	
+	<insert id="addReviewToPly" parameterType="map">
+		<![CDATA[
+			insert into playlist_review
+			values(seq_playlist_review_no.nextval, #{playlistNo}, #{reviewNo}, sysdate)
+		]]>
+	</insert>
+	
+	<select id="alreadyAdded" parameterType="map" resultType="int">
+		<![CDATA[
+			select count(playlist_review_no)
+			from playlist_review, playlist, users
+			where playlist_review.playlist_no = playlist.playlist_no
+			and playlist.user_no = users.user_no
+			and review_no = #{reviewNo}
+			and playlist.playlist_no = #{playlistNo}
+			and users.user_no = #{userNo}
+		]]>
+	</select>
+	
+	<delete id="deleteReviewFromPly" parameterType="map">
+		<![CDATA[
+			delete from playlist_review
+			where playlist_no = #{playlistNo}
+			and review_no = #{reviewNo}
+		]]>
+	</delete>
+	
+	<select id="alreadyLiked" parameterType="map" resultType="int">
+		<![CDATA[
+			select count(review_user_no)
+			from review_user
+			where review_no = #{reviewNo}
+			and user_no = #{userNo}
+		]]>
+	</select>
+	
+	<insert id="likeReview" parameterType="ReviewVo">
+		<![CDATA[
+			insert into review_user
+			values(seq_review_user_no.nextval, #{userNo}, #{reviewNo}, sysdate)		
+		]]>
+	</insert>
+	
+	<delete id="cancelLike" parameterType="ReviewVo">
+		<![CDATA[
+			delete from review_user
+			where user_no = #{userNo}
+			and review_no = #{reviewNo}
+		]]>
+	</delete>
+	
+	<select id="getReviewInfo" parameterType="int" resultMap="RReviewVo">
+		<![CDATA[
+			select review_content,
+			       style_name,
+			       nickname,
+			       imgurl,
+			       videourl
+			from review, users, style
+			where review.user_no = users.user_no
+			and review.style_no = style.style_no
+			and review_no = #{reviewNo}
+		]]>
+	</select>
+</mapper>

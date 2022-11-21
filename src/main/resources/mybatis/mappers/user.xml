@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+
+	<!-- ResultMap -->
+	<!--<resultMap id="RMUserVo" type="UserVo">
+		<result column="user_no" property="userNo" />
+		<result column="user_name" property="userName" />
+		<result column="nickname" property="nickname" />
+		<result column="email" property="email" />
+		<result column="password" property="password" />
+		<result column="user_profile" property="userProfile" />
+		<result column="join_date" property="joinDate" />
+	</resultMap>  -->	
+
+	<!-- 로그인시 authUser 데이터 -->
+	<select id="selectUser" parameterType="UserVo" resultType="UserVo">
+	 	<![CDATA[
+			SELECT  user_no userNo,
+        			user_name userName,
+        			nickname,
+        			email,
+        			user_profile userProfile
+			FROM users
+			WHERE email = #{email}
+			AND password = #{password}
+		]]>
+	</select>
+	
+	<!-- selectOne -->
+	<select id="selectOne" resultType="UserVo" parameterType="String">
+		<![CDATA[
+			select  user_no userNo,
+        			nickname,
+        			user_profile userProfile
+			from users
+			where nickname = #{nickname}
+			]]>
+
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="join">
+		<![CDATA[
+			insert into users
+			values(SEQ_USER_NO.nextval, #{userName}, #{nickname}, #{email}, #{password}, null, sysdate)
+		]]>
+	</insert>
+	
+	<!-- nickcheck -->
+	<select id="nickcheck" resultType="int" parameterType="String">
+		<![CDATA[
+			SELECT COUNT(nickname) FROM users WHERE nickname = #{nickname}
+			]]>
+	</select>
+	
+	
+
+</mapper>

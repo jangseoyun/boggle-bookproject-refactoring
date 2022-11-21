@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="UserVo" type="com.javaex.vo.UserVo"/>
+		<typeAlias alias="MybookVo" type="com.javaex.vo.MybookVo"/>
+		<typeAlias alias="ReviewVo" type="com.javaex.vo.ReviewVo"/>
+		<typeAlias alias="MusicVo" type="com.javaex.vo.MusicVo"/>
+		<typeAlias alias="PlaylistVo" type="com.javaex.vo.PlaylistVo"/>
+		<typeAlias alias="LikeReviewVo" type="com.javaex.vo.LikeReviewVo"/>
+		<typeAlias alias="BookreviewVo" type="com.javaex.vo.BookreviewVo"/>
+		<typeAlias alias="BookdetailVo" type="com.javaex.vo.BookdetailVo"/>
+		<typeAlias alias="PlaylistFolderVo" type="com.javaex.vo.PlaylistFolderVo"/>
+		<typeAlias alias="PlaylistVo" type="com.javaex.vo.PlaylistVo"/>
+		<typeAlias alias="HelpVo" type="com.javaex.vo.HelpVo"/>
+		<typeAlias alias="StyleVo" type="com.javaex.vo.StyleVo"/>
+		<typeAlias alias="BookmarkVo" type="com.javaex.vo.BookmarkVo"/>
+		<typeAlias alias="PlaylistClickVo" type="com.javaex.vo.PlaylistClickVo"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="mybatis/mappers/user.xml" />
+		<mapper resource="mybatis/mysqlmappers/mybook-mysql.xml" />
+		<mapper resource="mybatis/mysqlmappers/emotion-mysql.xml" />
+		<mapper resource="mybatis/mysqlmappers/bookdetail-mysql.xml" />
+		<mapper resource="mybatis/mappers/reviewwrite.xml" />
+		<mapper resource="mybatis/mysqlmappers/likeReview-mysql.xml"/>
+		<mapper resource="mybatis/mysqlmappers/playlistFolder-mysql.xml"/>
+		<mapper resource="mybatis/mysqlmappers/playlist-mysql.xml"/>
+		<mapper resource="mybatis/mappers/help.xml"/>
+		<mapper resource="mybatis/mysqlmappers/bookmark-mysql.xml"/>
+		<mapper resource="mybatis/mysqlmappers/playlistclick-mysql.xml"/>
+	</mappers>
+</configuration>
