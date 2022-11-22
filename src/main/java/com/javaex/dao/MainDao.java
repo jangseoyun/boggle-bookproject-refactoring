@@ -14,7 +14,7 @@ import com.javaex.vo.ReviewVo;
 @Repository
 public class MainDao {
 
-	@Autowired
+	@Autowired(required = false)
 	SqlSession sqlSession;
 	
 	public List<Map<String, Object>> getEmotion(){

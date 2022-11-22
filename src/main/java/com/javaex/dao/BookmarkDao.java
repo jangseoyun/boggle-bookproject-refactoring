@@ -13,7 +13,7 @@ import com.javaex.vo.BookmarkVo;
 @Repository
 public class BookmarkDao {
 	
-	@Autowired
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 
 	/*북마크 리스트 */

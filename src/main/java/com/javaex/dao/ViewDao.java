@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ViewDao {
 
-	@Autowired
+	@Autowired(required = false)
 	SqlSession sqlSession;
 	
 	public Map<String, Object> getReviewInfo(int reviewNo) {		

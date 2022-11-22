@@ -1,18 +1,16 @@
 package com.javaex.dao;
 
-import java.util.List;
-
+import com.javaex.vo.LikeReviewVo;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.javaex.vo.LikeReviewVo;
-import com.javaex.vo.MybookVo;
+import java.util.List;
 
 @Repository
 public class LikeReviewDao {
 
-	@Autowired
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 
 	/* 해당 서평 리스트 가져오기 */

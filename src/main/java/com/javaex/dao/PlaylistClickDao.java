@@ -11,8 +11,8 @@ import com.javaex.vo.PlaylistVo;
 
 @Repository
 public class PlaylistClickDao {
-	
-	@Autowired
+
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 	
 	public List<PlaylistClickVo> likelistclick(int userNo){

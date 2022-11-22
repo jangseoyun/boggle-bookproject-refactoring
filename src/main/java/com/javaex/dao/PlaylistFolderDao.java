@@ -12,8 +12,8 @@ import com.javaex.vo.PlaylistFolderVo;
 
 @Repository
 public class PlaylistFolderDao {
-	
-	@Autowired
+
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 	
 	/* 플레이리스트 폴더 클릭 -> 해당 플레이리스트 서평 리스트  */

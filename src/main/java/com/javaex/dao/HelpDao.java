@@ -11,7 +11,7 @@ import com.javaex.vo.HelpVo;
 @Repository
 public class HelpDao {
 	
-	@Autowired
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 
 	

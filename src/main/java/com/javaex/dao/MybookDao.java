@@ -10,8 +10,8 @@ import com.javaex.vo.MybookVo;
 
 @Repository
 public class MybookDao {
-	
-	@Autowired
+
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 
 	

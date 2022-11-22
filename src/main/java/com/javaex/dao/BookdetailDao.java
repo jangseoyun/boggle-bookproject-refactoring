@@ -4,16 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.javaex.vo.BookdetailVo;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Repository
+@Transactional
 public class BookdetailDao {
 	
-	@Autowired
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 	
 

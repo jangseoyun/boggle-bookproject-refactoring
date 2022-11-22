@@ -9,7 +9,7 @@ import com.javaex.vo.UserVo;
 @Repository
 public class UserDao {
 	
-	@Autowired
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 	
 	

@@ -10,8 +10,8 @@ import com.javaex.vo.PlaylistVo;
 
 @Repository
 public class PlaylistDao {
-	
-	@Autowired
+
+	@Autowired(required = false)
 	private SqlSession sqlSession;
 	
 	

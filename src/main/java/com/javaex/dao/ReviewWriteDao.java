@@ -12,7 +12,7 @@ import com.javaex.vo.StyleVo;
 @Repository
 public class ReviewWriteDao {
 
-	@Autowired
+	@Autowired(required = false)
 	SqlSession sqlSession;
 	
 	public int getReviewTotalCnt(long isbn) {
