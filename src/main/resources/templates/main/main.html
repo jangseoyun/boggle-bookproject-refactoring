@@ -1,8 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>    
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th = "http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,32 +27,29 @@
             
             <div class="links-container">
                 <ul class="links">
-                
-                	<c:choose>
-                		<c:when test="${sessionScope.authUser eq null}">
-                			<li class="mobile_delete">
-                				<a href="${pageContext.request.contextPath}/user/joinForm">회원가입</a>
-                			</li>
-                   			<li class="login" data-logStatus="logout">
-		                        <div class="userImg">
-		                            <img src="${pageContext.request.contextPath}/asset/img/profile.png" alt="">
-		                        </div>
-		                        <a href="${pageContext.request.contextPath}/user/loginForm">로그인</a>
-		                    </li>
-                		</c:when>
-                		<c:otherwise>
-                			<!-- 로그인 됐을때 화면 -->
-		                    <li class="mobile_delete"><a href="${pageContext.request.contextPath}/review/write">기록하기</a></li>
-		                    <li class="login" data-logStatus="login" data-userNo="${sessionScope.authUser.userNo }">
-		                    	<a href="${pageContext.request.contextPath}/${authUser.nickname}">
-		                    		<div class="userImg">
-			                            <img id="header-img-icon" src="${authUser.userProfile }" class="img-circle" onerror="this.src='${pageContext.request.contextPath}/asset/img/profile.png'">
-			                        </div>
-			                        <a href="${pageContext.request.contextPath}/${sessionScope.authUser.nickname }">${sessionScope.authUser.nickname }</a>
-		                    	</a>
-		                    </li>
-                		</c:otherwise>
-                	</c:choose>
+
+
+                    <li class="mobile_delete" th:if="${sessionScope.authUser eq null}">
+                        <a href="${pageContext.request.contextPath}/user/joinForm">회원가입</a>
+                    </li>
+                    <li class="login" data-logStatus="logout">
+                        <div class="userImg">
+                            <img src="${pageContext.request.contextPath}/asset/img/profile.png" alt="">
+                        </div>
+                        <a href="${pageContext.request.contextPath}/user/loginForm">로그인</a>
+                    </li>
+
+                    <!-- 로그인 됐을때 화면 -->
+                    <li class="mobile_delete"><a href="${pageContext.request.contextPath}/review/write">기록하기</a></li>
+                    <li class="login" data-logStatus="login" data-userNo="${sessionScope.authUser.userNo }">
+                        <a href="${pageContext.request.contextPath}/${authUser.nickname}">
+                            <div class="userImg">
+                                <img id="header-img-icon" src="${authUser.userProfile }" class="img-circle" onerror="this.src='${pageContext.request.contextPath}/asset/img/profile.png'">
+                            </div>
+                            <a href="${pageContext.request.contextPath}/${sessionScope.authUser.nickname }">${sessionScope.authUser.nickname }</a>
+                        </a>
+                    </li>
+
 
                 </ul>
             </div>
@@ -158,19 +152,14 @@
                 </div>
                 -->
                 <ul class="playlist-list">
-                	<c:choose>
-                		<c:when test="${sessionScope.authUser eq null}">
-                			<p class="logout-msg">로그인 후 이용해주세요</p>
-                		</c:when>
-                		<c:otherwise>
-		                    <!-- 
-		                    <li>퇴근길에 보면 힘이 나는 플리</li>
-		                    <li>우울할 때 정신차리고 갓생살기</li>
-		                    <li>남친이 빡치게 하면 보기</li>
-		                    <li>용기뿜뿜 명언 한구절</li> 
-		                    -->         		
-                		</c:otherwise>
-                	</c:choose>
+                    <p class="logout-msg" th:if="${sessionScope.authUser eq null}">로그인 후 이용해주세요</p>
+
+                    <!--
+                    <li>퇴근길에 보면 힘이 나는 플리</li>
+                    <li>우울할 때 정신차리고 갓생살기</li>
+                    <li>남친이 빡치게 하면 보기</li>
+                    <li>용기뿜뿜 명언 한구절</li>
+                    -->
                 </ul>
             </div>
         </div>
