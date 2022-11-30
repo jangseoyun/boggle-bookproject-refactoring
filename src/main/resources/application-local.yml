@@ -1,0 +1,26 @@
+server:
+  port: 8088
+  servlet:
+    encoding:
+      force-response: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/boggle
+    username: root
+    password: 232323
+  thymeleaf:
+    suffix: .html
+    prefix: classpath:/templates/
+    cache: false
+
+logging:
+  level:
+    root: info
+
+
+
+
+
+
