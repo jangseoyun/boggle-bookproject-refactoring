@@ -1,88 +1,60 @@
 package com.javaex.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.javaex.dto.bookdetail.BookDetailInfo;
+import com.javaex.dto.bookdetail.BookDetailResponse;
+import com.javaex.dto.bookdetail.BookReviewResponse;
 import com.javaex.service.BookdetailService;
-import com.javaex.vo.BookdetailVo;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/bookdetail")
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/boggle")
 public class BookdetailController {
-	
 	/* 필드 */
-	@Autowired
-	private BookdetailService bookdetailService;
+	private final BookdetailService bookdetailService;
 
 	/* 책 상세페이지 */
-	@RequestMapping("")
-	public String bookDetail(@RequestParam("bookNo") String bookNo,
-							 @RequestParam("userNo") String userNo,
-							 Model model) {
-		
-		System.out.println(bookNo);
-		System.out.println("Controller.bookdetail");
-		
+	@GetMapping("/{user-no}/bookdetail")
+	public ResponseEntity<BookDetailResponse> bookDetail(@RequestParam("user-no") Long userNo
+											, @PathVariable("no") String bookNo) {
+		log.info("{}번 유저, 책 상세페이지 접속", userNo);
 		//책 정보
-		BookdetailVo bookVo = bookdetailService.getBookVo(bookNo);
-		System.out.println("controller: "+ bookVo);
-		
+		BookDetailInfo bookInfo = bookdetailService.getBookVo(bookNo);
 		//해당 책 서평 총 수 
 		int bookReviewCount = bookdetailService.getCount(bookNo);
-		System.out.println(bookReviewCount);
-
-		//데이터 보내기
-		Map<String, Object> bookMap = new HashMap<String, Object>();
-		bookMap.put("bookVo", bookVo);
-		bookMap.put("bookReviewCount", bookReviewCount);
-
-		//데이터 보내기
-		model.addAttribute("bookMap",bookMap);
-		
-		return "book_detail/book_detail";
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(new BookDetailResponse(bookInfo, bookReviewCount));
 	}
 	
 	/* 서평 리스트 (최신순)*/
-	@ResponseBody
-	@RequestMapping("/reviewLatest")
-	public List<BookdetailVo> reviewListing(@RequestParam("bookNo") String bookNo,
-								Model model) {
-		
-		System.out.println("Controller.reviewListing");
-		
+	@GetMapping("/{book-no}/reviews")
+	public ResponseEntity<BookReviewResponse> reviewListing(@PathVariable("book-no") String bookNo) {
+		log.info("{}번 책 서평 리스트", bookNo);
 		//서평 리스트
-		List<BookdetailVo> reviewList = bookdetailService.getReviewList(bookNo);
-		System.out.println(reviewList);
-		
-		model.addAttribute("reviewList",reviewList);
-		
-		return reviewList;
-		
+		BookReviewResponse bookReviews = bookdetailService.getReviewList(bookNo);
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(bookReviews);
 	}
 	
 	/* 서평 리스트 (인기순) */
-	@ResponseBody
-	@RequestMapping("/reviewBest")
-	public List<BookdetailVo> reviewBest(@RequestParam("bookNo") String bookNo,
-											Model model) {
-							
-		System.out.println("Controller.reviewBest");
-		System.out.println(bookNo);
-		List<BookdetailVo> reviewBest = bookdetailService.getReviewBest(bookNo);
-		System.out.println(reviewBest);
-		
-		return reviewBest;
+	@GetMapping("/{book-no}/reviews/popularity")
+	public ResponseEntity<BookReviewResponse> reviewBest(@PathVariable("book-no") String bookNo) {
+		log.info("{}번 책 서평 리스트(인기순)", bookNo);
+		BookReviewResponse bookReviews = bookdetailService.getReviewBest(bookNo);
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(bookReviews);
 	}
 	
-	/* 로딩시 이전 북마크 데이터 확인 */
+	/*//* 로딩시 이전 북마크 데이터 확인 *//*
 	@ResponseBody
 	@RequestMapping("/checkbookMark")
 	public String checkbookMark(@RequestParam("bookNo") String bookNo,
@@ -99,7 +71,7 @@ public class BookdetailController {
 		return bookmarkCheck;
 	}
 	
-	/* 북마크 추가 / 제거 */
+	*//* 북마크 추가 / 제거 *//*
 	@ResponseBody
 	@RequestMapping("/bookmark")
 	public String bookmark(@RequestParam("markresult") String markresult,
@@ -123,7 +95,7 @@ public class BookdetailController {
 		}
 	}
 	
-	/* 서평 삭제 */
+	*//* 서평 삭제 *//*
 	@ResponseBody
 	@RequestMapping("/delete")
 	public int reviewRemove(@RequestParam("reviewNo") int reviewNo) {
@@ -133,7 +105,7 @@ public class BookdetailController {
 		
 		return deleteResult;
 		
-	}
+	}*/
 	
 	
 	
