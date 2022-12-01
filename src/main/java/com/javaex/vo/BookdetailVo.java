@@ -1,5 +1,12 @@
 package com.javaex.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class BookdetailVo {
 	
 	//필드
@@ -120,139 +127,5 @@ public class BookdetailVo {
 			this.bookReviewCount = bookReviewCount;
 		}
 
-		//메소드g,s
-
-		public String getBookNo() {
-			return bookNo;
-		}
-
-		public void setBookNo(String bookNo) {
-			this.bookNo = bookNo;
-		}
-
-		public String getBookTitle() {
-			return bookTitle;
-		}
-
-		public void setBookTitle(String bookTitle) {
-			this.bookTitle = bookTitle;
-		}
-
-		public String getAuthor() {
-			return author;
-		}
-
-		public void setAuthor(String author) {
-			this.author = author;
-		}
-
-		public String getBookUrl() {
-			return bookUrl;
-		}
-
-		public void setBookUrl(String bookUrl) {
-			this.bookUrl = bookUrl;
-		}
-
-		public String getCoverUrl() {
-			return coverUrl;
-		}
-
-		public void setCoverUrl(String coverUrl) {
-			this.coverUrl = coverUrl;
-		}
-
-		public int getBookReviewCount() {
-			return bookReviewCount;
-		}
-
-		public void setBookReviewCount(int bookReviewCount) {
-			this.bookReviewCount = bookReviewCount;
-		}
-
-		public int getRn() {
-			return rn;
-		}
-
-		public void setRn(int rn) {
-			this.rn = rn;
-		}
-
-		public int getReviewNo() {
-			return reviewNo;
-		}
-
-		public void setReviewNo(int reviewNo) {
-			this.reviewNo = reviewNo;
-		}
-
-		public String getReviewDate() {
-			return reviewDate;
-		}
-
-		public void setReviewDate(String reviewDate) {
-			this.reviewDate = reviewDate;
-		}
-
-		public int getStyleNo() {
-			return styleNo;
-		}
-
-		public void setStyleNo(int styleNo) {
-			this.styleNo = styleNo;
-		}
-
-		public String getEmoName() {
-			return emoName;
-		}
-
-		public void setEmoName(String emoName) {
-			this.emoName = emoName;
-		}
-
-		public int getUserNo() {
-			return userNo;
-		}
-
-		public void setUserNo(int userNo) {
-			this.userNo = userNo;
-		}
-
-		public String getNickname() {
-			return nickname;
-		}
-
-		public void setNickname(String nickname) {
-			this.nickname = nickname;
-		}
-
-		public int getLikecnt() {
-			return likecnt;
-		}
-
-		public void setLikecnt(int likecnt) {
-			this.likecnt = likecnt;
-		}
-		
-		public String getReviewContent() {
-			return reviewContent;
-		}
-
-		public void setReviewContent(String reviewContent) {
-			this.reviewContent = reviewContent;
-		}
-
-		//메소드 일반
-		@Override
-		public String toString() {
-			return "BookdetailVo [rn=" + rn + ", bookNo=" + bookNo + ", bookTitle=" + bookTitle + ", author=" + author
-					+ ", bookUrl=" + bookUrl + ", coverUrl=" + coverUrl + ", reviewNo=" + reviewNo + ", reviewContent="
-					+ reviewContent + ", reviewDate=" + reviewDate + ", styleNo=" + styleNo + ", emoName=" + emoName
-					+ ", userNo=" + userNo + ", nickname=" + nickname + ", likecnt=" + likecnt + ", bookReviewCount="
-					+ bookReviewCount + "]";
-		}
-		
-	
-	
 	
 }
