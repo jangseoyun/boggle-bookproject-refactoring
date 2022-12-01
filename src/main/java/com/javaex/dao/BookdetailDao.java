@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Lazy
 @Mapper
@@ -26,23 +27,9 @@ public interface BookdetailDao {
     int bookReviewCount(String bookNo);
 
     /* 로딩 북마크 체크 */
-    /*public int bookmarkCheck(String bookNo, String userNo) {
+    int bookmarkCheck(Map<String, String> userMap);
 
-        System.out.println("Dao.bookmarkCheck");
-
-        Map<String, String> bookmark = new HashMap<String, String>();
-        bookmark.put("userNo", userNo);
-        bookmark.put("bookNo", bookNo);
-
-        System.out.println("dao:" + bookmark);
-
-        int bookmarkCheck = sqlSession.selectOne("bookdetail.bookmarkCheck", bookmark);
-        System.out.println(bookmarkCheck);
-
-        return bookmarkCheck;
-    }
-
-    *//* 북마크 추가*//*
+    /*//* 북마크 추가*//*
     public int bookmarkInsert(String userNo, String bookNo) {
 
         System.out.println("Dao.bookmarkInsert");

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -44,11 +45,13 @@ public class BookdetailService {
         return getCount;
     }
 
-    /*//* 로딩 북마크 체크 *//*
+    /* 로딩 북마크 체크 */
     public String bookmarkCheck(String bookNo, String userNo) {
+        HashMap<String, String> bookmarkMap = new HashMap<>();
+        bookmarkMap.put("bookNo", bookNo);
+        bookmarkMap.put("userNo", userNo);
 
-        System.out.println("Service.bookmarkCheck");
-        int bookmarkCheck = bookdetailDao.bookmarkCheck(bookNo, userNo);
+        int bookmarkCheck = bookdetailDao.bookmarkCheck(bookmarkMap);
 
         if (bookmarkCheck == 0) {
             return "true";
@@ -57,10 +60,9 @@ public class BookdetailService {
         } else {
             return "error";
         }
-
     }
 
-    *//* 북마크 추가*//*
+    /*//* 북마크 추가*//*
     public String bookmarkInsert(String userNo, String bookNo) {
 
         System.out.println("Service.bookmark");
