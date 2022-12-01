@@ -1,13 +1,13 @@
 package com.javaex.dao;
 
 import com.javaex.dto.bookdetail.BookDetailInfo;
+import com.javaex.dto.bookdetail.BookMarkRequest;
 import com.javaex.dto.bookdetail.BookReviewDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Lazy
 @Mapper
@@ -27,43 +27,17 @@ public interface BookdetailDao {
     int bookReviewCount(String bookNo);
 
     /* 로딩 북마크 체크 */
-    int bookmarkCheck(Map<String, String> userMap);
+    int bookmarkCheck(BookMarkRequest bookMarkRequest);
 
-    /*//* 북마크 추가*//*
-    public int bookmarkInsert(String userNo, String bookNo) {
-
-        System.out.println("Dao.bookmarkInsert");
-
-        Map<String, String> markInsert = new HashMap<String, String>();
-        markInsert.put("userNo", userNo);
-        markInsert.put("bookNo", bookNo);
-
-        int addCount = sqlSession.insert("bookdetail.bookmarkInsert", markInsert);
-        System.out.println("addCount:" + addCount);
-
-        return addCount;
-    }
+    /* 북마크 추가*/
+    int bookmarkInsert(BookMarkRequest bookMarkRequest);
 
 
-    *//* 북마크 제거 *//*
-    public int bookmarkDelete(String userNo, String bookNo) {
-
-        System.out.println("Dao.bookmarkDelete");
-
-        Map<String, String> markDelete = new HashMap<String, String>();
-        markDelete.put("userNo", userNo);
-        markDelete.put("bookNo", bookNo);
-
-        int deleteCount = sqlSession.delete("bookdetail.bookmarkDelete", markDelete);
-        System.out.println("deleteCount:" + deleteCount);
+    /* 북마크 제거 */
+    int bookmarkDelete(BookMarkRequest bookMarkRequest);
 
 
-        return deleteCount;
-
-    }
-
-
-    *//* 서평 삭제 *//*
+    /*//* 서평 삭제 *//*
     public int reviewDelete(int reviewNo) {
         System.out.println("Dao.reviewDelete");
 

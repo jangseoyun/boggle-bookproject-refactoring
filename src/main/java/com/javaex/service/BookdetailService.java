@@ -1,9 +1,8 @@
 package com.javaex.service;
 
 import com.javaex.dao.BookdetailDao;
-import com.javaex.dto.bookdetail.BookDetailInfo;
-import com.javaex.dto.bookdetail.BookReviewDto;
-import com.javaex.dto.bookdetail.BookReviewResponse;
+import com.javaex.dto.bookdetail.*;
+import com.javaex.dto.bookdetail.factory.BookmarkFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,12 +45,8 @@ public class BookdetailService {
     }
 
     /* 로딩 북마크 체크 */
-    public String bookmarkCheck(String bookNo, String userNo) {
-        HashMap<String, String> bookmarkMap = new HashMap<>();
-        bookmarkMap.put("bookNo", bookNo);
-        bookmarkMap.put("userNo", userNo);
-
-        int bookmarkCheck = bookdetailDao.bookmarkCheck(bookmarkMap);
+    public String bookmarkCheck(BookMarkRequest bookMarkRequest) {
+        int bookmarkCheck = bookdetailDao.bookmarkCheck(bookMarkRequest);
 
         if (bookmarkCheck == 0) {
             return "true";
@@ -62,40 +57,20 @@ public class BookdetailService {
         }
     }
 
-    /*//* 북마크 추가*//*
-    public String bookmarkInsert(String userNo, String bookNo) {
-
-        System.out.println("Service.bookmark");
-        //북마크 추가
-        int addCount = bookdetailDao.bookmarkInsert(userNo, bookNo);
-
-        *//*-로 화면 변경되어야함*//*
-        String addResult = "true";
-        if (addCount == 1) {
-            addResult = "false";
-        }
-
-        return addResult;
+    //* 북마크 추가*/
+    public BookMarkResponse bookmarkInsert(BookMarkRequest bookMarkRequest) {
+        int addResult = bookdetailDao.bookmarkInsert(bookMarkRequest);
+        return BookmarkFactory.createResponse(addResult, bookMarkRequest.getBookNo());
     }
 
 
-    *//* 북마크 제거 *//*
-    public String bookmarkDelete(String userNo, String bookNo) {
-
-        System.out.println("Service.bookmarkDelete");
-        int deleteCount = bookdetailDao.bookmarkDelete(userNo, bookNo);
-
-        *//* +로 화변 변경되어야함 *//*
-        String deleteResult = "false";
-        if (deleteCount == 1) {
-            deleteResult = "true";
-        }
-
-        return deleteResult;
-
+    /* 북마크 제거 */
+    public BookMarkResponse bookmarkDelete(BookMarkRequest bookMarkRequest) {
+        int deleteCount = bookdetailDao.bookmarkDelete(bookMarkRequest);
+        return BookmarkFactory.createResponse(deleteCount, bookMarkRequest.getBookNo());
     }
 
-    *//* 서평 삭제 *//*
+    /*//* 서평 삭제 *//*
     public int reviewDelete(int reviewNo) {
         System.out.println("Service.reviewDelete");
         int deleteResult = bookdetailDao.reviewDelete(reviewNo);

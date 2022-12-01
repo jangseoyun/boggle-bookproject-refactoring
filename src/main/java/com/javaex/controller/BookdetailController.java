@@ -1,8 +1,6 @@
 package com.javaex.controller;
 
-import com.javaex.dto.bookdetail.BookDetailInfo;
-import com.javaex.dto.bookdetail.BookDetailResponse;
-import com.javaex.dto.bookdetail.BookReviewResponse;
+import com.javaex.dto.bookdetail.*;
 import com.javaex.service.BookdetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +17,9 @@ public class BookdetailController {
     private final BookdetailService bookdetailService;
 
     /* 책 상세페이지 */
-    @GetMapping("/{user-no}")
+    @GetMapping("/{book-no}")
     public ResponseEntity<BookDetailResponse> bookDetail(@RequestParam("user-no") Long userNo
-            , @PathVariable("no") String bookNo) {
+            , @PathVariable("book-no") String bookNo) {
         log.info("{}번 유저, 책 상세페이지 접속", userNo);
         //책 정보
         BookDetailInfo bookInfo = bookdetailService.getBookVo(bookNo);
@@ -55,41 +53,37 @@ public class BookdetailController {
     }
 
     /* 로딩시 이전 북마크 데이터 확인 */
-    @GetMapping("{book-no}/bookmark") //todo: 메세지 리팩토링 예정
-    public ResponseEntity checkbookMark(@PathVariable("book-no") String bookNo
-                                , @RequestParam("user-no") String userNo) {
-        log.info("{} 도서, {} 유저 북마크 체크", bookNo, userNo);
-        String bookmarkCheck = bookdetailService.bookmarkCheck(bookNo, userNo);
+    @GetMapping("/bookmark") //todo: 메세지 리팩토링 예정
+    public ResponseEntity checkbookMark(BookMarkRequest bookMarkRequest) {
+        log.info("{} 도서, {} 유저 북마크 체크", bookMarkRequest.getBookNo(), bookMarkRequest.getUserNo());
+        String bookmarkCheck = bookdetailService.bookmarkCheck(bookMarkRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookmarkCheck);
     }
 
-    /*//* 북마크 추가 / 제거 *//*
-	@ResponseBody
-	@RequestMapping("/bookmark")
-	public String bookmark(@RequestParam("markresult") String markresult,
-						   @RequestParam("userNo") String userNo,
-						   @RequestParam("bookNo") String bookNo) {
-		
-		System.out.println("Controller.bookmark");
-		System.out.println("controller: "+markresult);
-		
-		if(markresult.equals("false")) {
-			
-			String deleteResult = bookdetailService.bookmarkDelete(userNo,bookNo);
-			System.out.println("북마크 삭제, +화면"+deleteResult);
-			return deleteResult;
-			
-		}else{
-			String addResult = bookdetailService.bookmarkInsert(userNo,bookNo);
-			System.out.println("북마크 추가, -화면"+addResult);
-			return addResult;
-
-		}
+    /* 북마크 추가 */
+	@PutMapping("/bookmark")
+	public ResponseEntity<BookMarkResponse> bookmarkAdd(BookMarkRequest bookMarkRequest
+                            , @RequestParam("mark-status") String markStatus) {
+        log.info("{} 유저 북마크 상태 : {}", bookMarkRequest.getUserNo(), markStatus);
+        BookMarkResponse bookMarkResponse = bookdetailService.bookmarkInsert(bookMarkRequest);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookMarkResponse);
 	}
+
+    /* 북마크 삭제 */
+    @DeleteMapping("/bookmark")
+    public ResponseEntity<BookMarkResponse> bookmarkDelete(BookMarkRequest bookMarkRequest
+                                , @RequestParam("mark-status") String markStatus) {//false
+        BookMarkResponse bookMarkResponse = bookdetailService.bookmarkDelete(bookMarkRequest);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookMarkResponse);
+    }
 	
-	*//* 서평 삭제 *//*
+	/*//* 서평 삭제 *//*
 	@ResponseBody
 	@RequestMapping("/delete")
 	public int reviewRemove(@RequestParam("reviewNo") int reviewNo) {
