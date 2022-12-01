@@ -83,17 +83,14 @@ public class BookdetailController {
                 .body(bookMarkResponse);
     }
 	
-	/*//* 서평 삭제 *//*
-	@ResponseBody
-	@RequestMapping("/delete")
-	public int reviewRemove(@RequestParam("reviewNo") int reviewNo) {
-		
-		System.out.println("Controller.reviewRemove");
-		int deleteResult = bookdetailService.reviewDelete(reviewNo);
-		
-		return deleteResult;
-		
-	}*/
+	/* 서평 삭제 */
+	@DeleteMapping("/review/{no}")
+	public ResponseEntity<ReviewDeleteResponse> reviewRemove(@PathVariable("no") Long reviewNo) {
+		log.info("{}번 서평 삭제 요청", reviewNo);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookdetailService.reviewDelete(reviewNo));
+	}
 
 
 }

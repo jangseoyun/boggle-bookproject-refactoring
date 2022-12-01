@@ -2,12 +2,12 @@ package com.javaex.service;
 
 import com.javaex.dao.BookdetailDao;
 import com.javaex.dto.bookdetail.*;
+import com.javaex.dto.bookdetail.factory.BookReviewFactory;
 import com.javaex.dto.bookdetail.factory.BookmarkFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -70,12 +70,12 @@ public class BookdetailService {
         return BookmarkFactory.createResponse(deleteCount, bookMarkRequest.getBookNo());
     }
 
-    /*//* 서평 삭제 *//*
-    public int reviewDelete(int reviewNo) {
-        System.out.println("Service.reviewDelete");
+    /* 서평 삭제 */
+    public ReviewDeleteResponse reviewDelete(Long reviewNo) {
         int deleteResult = bookdetailDao.reviewDelete(reviewNo);
-        return deleteResult;
-    }*/
+        System.out.println("service: "+deleteResult);
+        return BookReviewFactory.createDeleteResponse(deleteResult);
+    }
 
 
 }

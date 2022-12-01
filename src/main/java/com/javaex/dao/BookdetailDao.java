@@ -32,20 +32,10 @@ public interface BookdetailDao {
     /* 북마크 추가*/
     int bookmarkInsert(BookMarkRequest bookMarkRequest);
 
-
     /* 북마크 제거 */
     int bookmarkDelete(BookMarkRequest bookMarkRequest);
 
-
-    /*//* 서평 삭제 *//*
-    public int reviewDelete(int reviewNo) {
-        System.out.println("Dao.reviewDelete");
-
-        int deleteResult = sqlSession.delete("bookdetail.reviewDelete", reviewNo);
-        System.out.println("책상세 서평 삭제 결과:" + deleteResult);
-
-        return deleteResult;
-    }*/
-
+    /* 서평 삭제 */
+    int reviewDelete(Long reviewNo);
 
 }
