@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="emotion">
+<mapper namespace="com.javaex.dao.MainDao">
 
     <!-- ResultMap -->
     <resultMap id="RReviewVo" type="map">
@@ -43,16 +43,16 @@
         ]]>
 	</select>
 
-    <select id="getReviewListByEmo" parameterType="int" resultMap="RReviewVo">
+    <select id="getReviewListByEmo" parameterType="Long" resultMap="RReviewVo">
 		<![CDATA[
-        select review_content,
-               review_no,
-               nickname,
-               book_no,
-               style_name,
-               imgurl,
-               videourl,
-               emo_no
+        select innertab.review_content,
+               innertab.review_no,
+               innertab.nickname,
+               innertab.book_no,
+               innertab.style_name,
+               innertab.imgurl,
+               innertab.videourl,
+               innertab.emo_no
         from (select review_content,
                      review_no,
                      nickname,
@@ -69,24 +69,24 @@
                 and review.style_no = style.style_no
                 and style.emo_no = emotion.emo_no
                 and emotion.emo_no = #{emoNo}
-              order by DBMS_RANDOM.RANDOM) limit 19
+              order by RAND()) innertab limit 19
         ]]>
 	</select>
 
-    <select id="getReviewListByPly" parameterType="int" resultMap="RReviewVo">
+    <select id="getReviewListByPly" parameterType="Long" resultMap="RReviewVo">
 		<![CDATA[
-        select review_content,
-               review_no,
-               nickname,
-               book_no,
-               style_name,
-               emo_name
-        from (select review_content,
-                     tt.review_no,
-                     nickname,
-                     book_no,
-                     style_name,
-                     emo_name
+        select outtab.review_content,
+               outtab.review_no,
+               outtab.nickname,
+               outtab.book_no,
+               outtab.style_name,
+               outtab.emo_name
+        from (select innertab.review_content,
+                     innertab.review_no,
+                     innertab.nickname,
+                     innertab.book_no,
+                     innertab.style_name,
+                     innertab.emo_name
               from playlist_review,
                    (select review_content,
                            review_no,
@@ -100,18 +100,18 @@
                          style
                     where users.user_no = review.user_no
                       and review.style_no = style.style_no
-                      and style.emo_no = emotion.emo_no) tt
-              where playlist_review.review_no = tt.review_no
+                      and style.emo_no = emotion.emo_no) innertab
+              where playlist_review.review_no = innertab.review_no
                 and playlist_no = #{playlistNo}
-              order by DBMS_RANDOM.RANDOM) limit 19
+              order by RAND()) outtab limit 19
         ]]>
 	</select>
 
-    <select id="getMusicListByEmo" parameterType="int" resultType="MusicVo">
+    <select id="getMusicListByEmo" parameterType="Long" resultType="com.javaex.vo.MusicVo">
 		<![CDATA[
-        select music_title musicTitle,
-               artist,
-               music_path  musicPath
+        select emo.music_title musicTitle,
+               emo.artist,
+               emo.music_path  musicPath
         from (select music_title,
                      artist,
                      music_path
@@ -119,15 +119,15 @@
                    emotion
               where music.emo_no = emotion.emo_no
                 and music.emo_no = #{emoNo}
-              order by DBMS_RANDOM.RANDOM) limit 6
+              order by RAND()) emo limit 6
         ]]>
 	</select>
 
-    <select id="getMusicListByPly" parameterType="int" resultType="MusicVo">
+    <select id="getMusicListByPly" parameterType="Long" resultType="com.javaex.vo.MusicVo">
 		<![CDATA[
-        select music_title musicTitle,
-               music_path  musicPath,
-               artist
+        select innertab.music_title musicTitle,
+               innertab.music_path  musicPath,
+               innertab.artist
         from (select music_title,
                      music_path,
                      artist,
@@ -136,15 +136,15 @@
                    playlist
               where music.emo_no = playlist.emo_no
                 and playlist_no = #{playlistNo}
-              order by DBMS_RANDOM.RANDOM) limit 6
+              order by RAND()) innertab limit 6
         ]]>
 	</select>
 
-    <select id="getTotalEmoTagCnt" resultType="int">
+    <select id="getTotalEmoTagCnt" resultType="Long">
 		<![CDATA[
-        select emo_no
-        from (select totalCnt,
-                     emo_no
+        select outtab.emo_no
+        from (select innertab.totalCnt,
+                     innertab.emo_no
               from (select count(review_no) totalCnt,
                            emotion.emo_no
                     from review,
@@ -152,15 +152,15 @@
                          style
                     where review.style_no = style.style_no
                       and style.emo_no = emotion.emo_no
-                    group by emotion.emo_no)
+                    group by emotion.emo_no) innertab
               where totalCnt > 0
-              order by dbms_random.value) limit 1
+              order by RAND()) outtab limit 1
         ]]>
 	</select>
 
     <!--************** 플레이리스트 목록 가져오기 ****************-->
     <!-- (1) 내가 만든 플리 -->
-    <select id="getMyPlaylist-1" parameterType="int" resultType="PlaylistVo">
+    <select id="getMyPlaylist" parameterType="Long" resultType="com.javaex.vo.PlaylistVo">
 		<![CDATA[
         select playlist_name    playlistName,
                playlist_no      playlistNo,
@@ -177,7 +177,7 @@
 	</select>
 
     <!-- (2) 좋아요한 플리 -->
-    <select id="getMyPlaylist-2" parameterType="int" resultType="PlaylistVo">
+    <select id="getLikeMyPlaylist" parameterType="Long" resultType="com.javaex.vo.PlaylistVo">
 		<![CDATA[
         select playlist_name        playlistName,
                playlist.playlist_no playlistNo,
@@ -196,14 +196,14 @@
         ]]>
 	</select>
 
-    <insert id="addNewPlaylist" parameterType="PlaylistVo">
-        <selectKey keyProperty="playlistNo" resultType="int" order="BEFORE">
-            select seq_playlist_no.nextval from dual
+    <insert id="addNewPlaylist" parameterType="com.javaex.dto.main.AddPlayListRequest" useGeneratedKeys="true">
+        <selectKey keyProperty="playlistNo" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
         </selectKey>
 
         <![CDATA[
 			insert into playlist
-			values(#{playlistNo}, #{userNo}, sysdate, #{playlistName}, #{emoNo})
+			values(#{playlistNo}, #{userNo}, now(), #{playlistName}, #{emoNo})
 		]]>
     </insert>
 
@@ -221,7 +221,7 @@
         ]]>
 	</insert>
 
-    <select id="alreadyAdded" parameterType="map" resultType="int">
+    <select id="alreadyAdded" parameterType="map" resultType="Long">
 		<![CDATA[
         select count(playlist_review_no)
         from playlist_review,
@@ -244,7 +244,7 @@
         ]]>
 	</delete>
 
-    <select id="alreadyLiked" parameterType="map" resultType="int">
+    <select id="alreadyLiked" parameterType="map" resultType="Long">
 		<![CDATA[
         select count(review_user_no)
         from review_user
@@ -253,14 +253,14 @@
         ]]>
 	</select>
 
-    <insert id="likeReview" parameterType="ReviewVo">
+    <insert id="likeReview" parameterType="map" useGeneratedKeys="true" keyProperty="review_user_no">
 		<![CDATA[
-        insert into review_user
-        values (seq_review_user_no.nextval, #{userNo}, #{reviewNo}, sysdate)
+        insert into review_user(review_user_no, user_no, review_no, review_like_date)
+        values (review_user_no, #{userNo}, #{reviewNo}, now())
         ]]>
 	</insert>
 
-    <delete id="cancelLike" parameterType="ReviewVo">
+    <delete id="cancelLike" parameterType="map">
 		<![CDATA[
         delete
         from review_user
