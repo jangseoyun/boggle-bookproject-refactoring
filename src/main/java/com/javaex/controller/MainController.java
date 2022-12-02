@@ -1,123 +1,100 @@
 package com.javaex.controller;
 
-import java.util.HashMap;
+import com.javaex.dto.main.AddPlayListRequest;
+import com.javaex.dto.main.AddPlayListResponse;
+import com.javaex.dto.main.MainReviewByEmoRequest;
+import com.javaex.service.MainService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.javaex.service.MainService;
-import com.javaex.vo.PlaylistVo;
-import com.javaex.vo.ReviewVo;
-
-@Controller
-@RequestMapping("/main")
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/boggle/index")
 public class MainController {
-	
-	@Autowired
-	MainService mainService;
-	
-	@RequestMapping("")
-	public String bookDetail() {
-		System.out.println("main");
-		
-		return "main/main";
-	}
 
-	@ResponseBody
-	@RequestMapping("/getemotion")
-	public List<Map<String, Object>> getEmotion() {
-		System.out.println("MainController > getEmotion()");
-		
-		return mainService.getEmotion();
-	}
-	
-	@ResponseBody
-	@RequestMapping("/reviewmusiclist") 
-	public Map<String, Object> getReviewListByEmo(@RequestParam(value="emoNo", required=false) String emoNo,
-												  @RequestParam(value="playlistNo", required=false) Integer playlistNo,
-												  @RequestParam(value="userNo", required=false) String userNo) {
-		System.out.println("MainController > getReviewList()");
+    private final MainService mainService;
 
-		System.out.println("--userNo: " + userNo);
-		System.out.println("--emoNo: " + emoNo);
-		System.out.println("--plyNo: " + playlistNo);
+    @GetMapping("")
+    public String bookDetail() {
+        log.info("메인 페이지 요청");
+        return "main/main";
+    }
 
-		if(emoNo == null) {
-			emoNo = "null";
-		}
-		
-		Integer emoNoInt = null;
-		if( !"null".equals(emoNo) ) {
-			System.out.println("감정 분류 리스트 불러오겠습니다.");
-			emoNoInt = Integer.parseInt(emoNo);
-		}
+    @GetMapping("/emotion")
+    public ResponseEntity<List<Map<String, Object>>> getEmotion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.getEmotion());
+    }
 
-		Integer userNoInt = null;
-		if( !userNo.equals("undefined") && !userNo.equals("null") ) {
-			System.out.println("로그인 상태");
-			userNoInt = Integer.parseInt(userNo);
-		} 
+    /*메인 서평 플레이*/
+    @GetMapping("/play")
+    public ResponseEntity getReviewListByEmo(@RequestBody MainReviewByEmoRequest mainReviewByEmoRequest) {
+        log.info("reuqest: {}", mainReviewByEmoRequest);
+        //TODO : 하나로 보내줄 수 있도록  service에서 처리
+        if (mainReviewByEmoRequest.getPlaylistNo() == null && mainReviewByEmoRequest.getEmoNo() == null) {
+            // emoNo, playlistNo 둘 다 null인 경우 (userNo 존재 여부 상관없이) 메인 자동 재생
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(mainService.beforeLoginPlaylist());
+        }
 
-		return mainService.getReviewListByEmo(userNoInt, emoNoInt, playlistNo);
-		
-	}
-	
-	@ResponseBody
-	@RequestMapping("/getMyPlaylist")
-	public List<PlaylistVo> getMyPlaylist(@RequestParam(value="userNo") int userNo) {
-		System.out.println("MainController > getMyPlaylist");
-		
-		return mainService.getMyPlaylist(userNo);
-	}
-	
-	@ResponseBody
-	@RequestMapping("/getMyPlaylistModal")
-	public List<Map<String, Object>> getMyPlaylistModal(@RequestBody ReviewVo reviewVo) { 
-		System.out.println("MainController > getMyPlaylistModal");
-		
-		List<Map<String, Object>> modalPlaylist = mainService.getMyPlaylistModal(reviewVo);
-		return modalPlaylist;
-	}
-	
-	@ResponseBody
-	@RequestMapping("/toggleReviewToPly")
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.getReviewListByEmo(mainReviewByEmoRequest));
+    }
+
+    @GetMapping("{user-no}/playlist")
+    public ResponseEntity getMyPlaylist(@PathVariable(value = "user-no") Long userNo) {
+        log.info("getMyPlaylist");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.getMyPlaylist(userNo));
+    }
+
+    @GetMapping("{user-no}/playlist-modal")//TODO: 로직 이해 필요
+    public ResponseEntity getMyPlaylistModal(@PathVariable("user-no") Long userNo
+                                            , @RequestParam("review-no") Long reviewNo) {
+        log.info("getMyPlaylistModal");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.getMyPlaylistModal(userNo, reviewNo));
+    }
+
+	@PostMapping("/toggleReviewToPly")//update, delete
 	public Integer toggleReviewToPly(@RequestBody Map<String, Object> map) {
-		System.out.println("MainController > toggleReviewToPly");
-		
+		log.info("toggleReviewToPly");
 		return mainService.toggleReviewToPly(map);
 	}
-	
-	@ResponseBody
-	@RequestMapping("/addNewPlaylist")
-	public int addNewPlaylist(@RequestBody PlaylistVo pvo) { // userNo, playlistName, emoNo
-		System.out.println("MainController > addNewPlaylist" + pvo);
-		
-		return mainService.addNewPlaylist(pvo);
-	}
-	
-	@ResponseBody
-	@RequestMapping("/toggleReviewLike")	
-	public Map<String, String> toggleReviewLike(@RequestBody ReviewVo reviewVo) { // reviewNo, userNo
-		System.out.println("MainController > toggleReviewLike");
-		
-		String result = mainService.toggleReviewLike(reviewVo);
-		
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("result", result);
-		
-		return map;
-	}
 
-	@RequestMapping("/playlist")
-	public String playlist(@RequestParam(value="playlistNo") int playlistNo) {
-		System.out.println("MainController > playlist");
+    @PutMapping("/playlist")
+    public ResponseEntity<AddPlayListResponse> addNewPlaylist(@RequestBody AddPlayListRequest addPlayListRequest) {
+        log.info("addNewPlaylist : {}", addPlayListRequest);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.addNewPlaylist(addPlayListRequest));
+    }
 
+    @PutMapping("{user-no}/toggle-review-like")
+    public ResponseEntity toggleReviewLike(@PathVariable("user-no") Long userNo
+                                         , @RequestParam("review-no") Long reviewNo) {
+        log.info("toggleReviewLike");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(mainService.toggleReviewLike(userNo, reviewNo));
+    }
+
+	@GetMapping("{no}/playlist")
+	public String playlist(@PathVariable("no") Long playlistNo) {
+		log.info("playlist");
 		return "main/main";
 	}
 }
