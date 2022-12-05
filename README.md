@@ -26,7 +26,7 @@
   🟦 BackEnd :<br>
   Development Tool : Ecliplse, Apache-Tomcat, Sql Developer<br>
   Framework : Spring, Mybatis, bootstrap<br>
-  Language/Skills : JAVA, SQL, JSP & Servlet, jQuery<br>
+  Language/Skills : JAVA8, SQL, JSP & Servlet, jQuery<br>
   Library : JSTL<br>
   DB : Oracle<br>
   Build tool : Maven<br>
@@ -34,14 +34,13 @@
   <br>
 
 - 리팩토링 :
-  - 🟧 FrontEnd : HTML / CSS / JavaScript / JSP <br>
-    🟧 BackEnd :<br>
-    Development Tool : IntelliJ, Apache-Tomcat, Sql Developer<br>
-    Framework : Spring, Mybatis, bootstrap<br>
-    Language/Skills : JAVA, SQL, JSP & Servlet, jQuery<br>
-    Library : JSTL<br>
+  - 🟧 BackEnd : RestAPI <br>
+    Development Tool : IntelliJ, springboot, Mybatis <br>
+    Framework : Spring, Mybatis, swagger <br>
+    Language/Skills : JAVA11, SQL <br>
     DB : Mysql<br>
-    Build tool : Maven<br>
+    Build tool : Gradle<br>
+  - 진행중 : TEST Code, Exception, JWT, Spring Security, 코드 성능 개선, JPA
 
 ---
 
