@@ -1,7 +1,9 @@
 package com.javaex.controller;
 
 import com.javaex.dto.user.JoinDto;
-import com.javaex.dto.user.JoinResponse;
+import com.javaex.dto.user.UserResponse;
+import com.javaex.dto.user.LoginRequest;
+import com.javaex.dto.user.LoginResponse;
 import com.javaex.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,45 +18,23 @@ public class UserController {//TODO: spring security 변경
 
 	/*가입*/
 	@PutMapping("/join")
-	public JoinResponse join(@RequestBody JoinDto joinRequest) {
+	public UserResponse join(@RequestBody JoinDto joinRequest) {
 		log.info("join : {}", joinRequest);
-		JoinResponse joinResult = userService.join(joinRequest);
+		UserResponse joinResult = userService.join(joinRequest);
 		return joinResult;
 	}
 	
 	/* 로그인 */
-	/*@PostMapping("/login")
-	public String login(@RequestBody UserVo userVo) {
-		log.info("login:{}", );
-		
-		//유저 이메일, 패스워드 넣으면 넘버, 이름 주는 메소드
-		UserVo authUser = userService.login(userVo);
-		System.out.println("authUser : "+authUser);
-		
-		//로그인 성공여부 확인
-		if(authUser != null) {
-			//로그인 성공시
-			System.out.println("로그인성공");
-			
-			//세션에 저장
-			session.setAttribute("authUser", authUser);
-			
-			//리다이렉트
-			return "redirect:/main";
-		}else {
-			System.out.println("로그인실패");
-			
-			String result = "fail";
-			model.addAttribute("result", result);
-			
-			return "redirect:/user/loginForm";
-		}
-	}*/
+	@PostMapping("/login")
+	public LoginResponse login(@RequestBody LoginRequest loginRequest) {//email, password
+		log.info("login:{}", loginRequest);
+		String token = userService.login(loginRequest);
+		return new LoginResponse(token);
+	}
 	
 	/*//* 로그아웃 *//*
 	@RequestMapping("/logout")
 	public String logout(HttpSession httpSession) {
-		
 		System.out.println("UserController>logout");
 		
 		//세션정보 삭제
