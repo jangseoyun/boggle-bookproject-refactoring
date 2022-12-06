@@ -1,43 +1,31 @@
 package com.javaex.controller;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.javaex.dto.user.JoinDto;
+import com.javaex.dto.user.JoinResponse;
 import com.javaex.service.UserService;
-import com.javaex.vo.UserVo;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/user")
-public class UserController {
-	
-	//필드
-	@Autowired
-	private UserService userService;
-	
-	
-	/* 로그인폼 */
-	@RequestMapping("/loginForm")
-	public String loginForm() {
-		System.out.println("UserController>loginForm");
-		
-		return "user/loginForm";
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/boggle/user")
+public class UserController {//TODO: spring security 변경
+	private final UserService userService;
+
+	/*가입*/
+	@PutMapping("/join")
+	public JoinResponse join(@RequestBody JoinDto joinRequest) {
+		log.info("join : {}", joinRequest);
+		JoinResponse joinResult = userService.join(joinRequest);
+		return joinResult;
 	}
 	
 	/* 로그인 */
-	@RequestMapping("/login")
-	public String login(Model model,
-						@ModelAttribute UserVo userVo,
-						HttpSession session) {
-		System.out.println("UserController>login");
+	/*@PostMapping("/login")
+	public String login(@RequestBody UserVo userVo) {
+		log.info("login:{}", );
 		
 		//유저 이메일, 패스워드 넣으면 넘버, 이름 주는 메소드
 		UserVo authUser = userService.login(userVo);
@@ -61,9 +49,9 @@ public class UserController {
 			
 			return "redirect:/user/loginForm";
 		}
-	}
+	}*/
 	
-	/* 로그아웃 */
+	/*//* 로그아웃 *//*
 	@RequestMapping("/logout")
 	public String logout(HttpSession httpSession) {
 		
@@ -74,27 +62,6 @@ public class UserController {
 		httpSession.invalidate();
 		
 		return "redirect:/main";
-	}
-	
-	
-	/* 회원가입 */
-	@RequestMapping("/joinForm")
-	public String joinForm() {
-		System.out.println("joinForm");
-		
-		return "user/joinForm";
-	}
-	
-	/*가입*/
-	@RequestMapping(value="/join", method={RequestMethod.GET, RequestMethod.POST})
-	public String join(@ModelAttribute UserVo userVo) {
-		System.out.println("UserController > join");
-		
-		System.out.println(userVo);
-		//파라미터값 넣은 userVo 넣어주는 insert 메소드 이용
-		userService.insert(userVo);	
-		
-		return "user/loginForm";
 	}
 	
 	//닉네임 체크
@@ -109,16 +76,12 @@ public class UserController {
     }
 	
 	
-	/* 회원정보수정 */
+	*//* 회원정보수정 *//*
 	@RequestMapping("/user_modify")
 	public String user_modify() {
 		System.out.println("user_modify");
 		
 		return "user/user_modify";
-	}
-	
-	
-	
-	
+	}*/
 
 }
