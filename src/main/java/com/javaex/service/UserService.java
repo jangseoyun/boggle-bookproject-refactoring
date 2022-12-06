@@ -57,10 +57,4 @@ public class UserService {
         return JwtUtil.createToken(userLogin.getEmail(), secretKey, expireTime);
     }
 
-    //닉네임체크
-    /*public int nickcheck(String nickname) {
-        log.info("nickcheck()");
-        int cnt = userDao.nickcheck(nickname);
-        return cnt;
-    }*/
 }

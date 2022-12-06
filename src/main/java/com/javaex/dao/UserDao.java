@@ -17,13 +17,4 @@ public interface UserDao {
 	//로그인
 	LoginDto login(String email);
 
-	//닉네임체크
-	/*public int nickcheck(String nickname) {
-		System.out.println("UserService.nickcheck()");
-
-		int cnt = sqlSession.selectOne("user.nickcheck",nickname);
-
-		return cnt;
-	}*/
-
 }

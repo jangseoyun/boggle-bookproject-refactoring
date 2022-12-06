@@ -7,6 +7,7 @@ import com.javaex.dto.user.LoginResponse;
 import com.javaex.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -43,24 +44,11 @@ public class UserController {//TODO: spring security 변경
 		
 		return "redirect:/main";
 	}
-	
-	//닉네임 체크
-	@RequestMapping(value="/nicknameCheck")
-    @ResponseBody
-    public int nicknameCheck(@RequestParam("nickname") String nickname){
-        
-    	System.out.println("사용하고싶은 닉네임 : "+nickname);
-        int cnt = userService.nickcheck(nickname);
-        
-        return cnt;
-    }
-	
-	
+
 	*//* 회원정보수정 *//*
 	@RequestMapping("/user_modify")
 	public String user_modify() {
 		System.out.println("user_modify");
-		
 		return "user/user_modify";
 	}*/
 
