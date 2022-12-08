@@ -1,10 +1,7 @@
 package com.javaex.service;
 
 import com.javaex.dao.UserDao;
-import com.javaex.dto.user.JoinDto;
-import com.javaex.dto.user.UserResponse;
-import com.javaex.dto.user.LoginRequest;
-import com.javaex.dto.user.LoginDto;
+import com.javaex.dto.user.*;
 import com.javaex.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,4 +54,8 @@ public class UserService {
         return JwtUtil.createToken(userLogin.getEmail(), secretKey, expireTime);
     }
 
+    //단일 유저 이메일 조회
+    public UserDto findByUserEmail(String email) {
+        return userDao.findByUserEmail(email);
+    }
 }
