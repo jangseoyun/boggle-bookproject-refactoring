@@ -31,7 +31,7 @@ public class HttpUtil {
         this.factory = new HttpComponentsClientHttpRequestFactory();
         this.factory.setConnectTimeout(5000);
         this.factory.setReadTimeout(5000);
-        this.body = new LinkedMultiValueMap<String, String>();
+        this.body = new LinkedMultiValueMap<>();
         this.queryStringToken = true;
     }
  
