@@ -1,4 +1,5 @@
-# Boggle_BookProject
+# Boggle-BookProject-Refactoring
+- [리팩토링 전 프로젝트](https://github.com/jangseoyun/Boggle_BookProject)
 
 # Boggle [보글: 보다 글을]
 [보글 기획 Velog](https://velog.io/@may_yun/3%EC%B0%A8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-Boggle-%EC%84%9C%ED%8F%89-%EC%9E%AC%EC%83%9D-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%ED%9A%8D-%EB%B0%8F-Front-End).
