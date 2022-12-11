@@ -1,40 +1,19 @@
 package com.javaex.dao;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.javaex.dto.bookmark.BookMarkListResponse;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
-import com.javaex.vo.BookmarkVo;
+import java.util.List;
 
+@Lazy
+@Mapper
 @Repository
-public class BookmarkDao {
-	
-	@Autowired(required = false)
-	private SqlSession sqlSession;
+public interface BookmarkDao {
 
 	/*북마크 리스트 */
-	public List<BookmarkVo> getBMList(int userNo){
-		System.out.println("BookmarkDao.getBookMarkList()");
-		
-		List<BookmarkVo>bookmarkList = sqlSession.selectList("bookmark.bookMarkList", userNo);
-			System.out.println(bookmarkList);
-		
-		return bookmarkList;
-	}
-	
-	/*5개 북마크 리스트 */
-	public List<BookmarkVo> get5book(int userNo){
-		System.out.println("BookmarkDao.get5book()");
-		
-		List<BookmarkVo>get5book = sqlSession.selectList("bookmark.List5", userNo);
-		System.out.println(get5book);
-		
-		return get5book;
-	}
+	List<BookMarkListResponse> bookMarkList(String userEmail);
 	
 	/*책 수 가져오기*/
 //	public int countotal() {
