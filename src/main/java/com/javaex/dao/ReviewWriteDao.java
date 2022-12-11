@@ -1,9 +1,6 @@
 package com.javaex.dao;
 
-import com.javaex.dto.reviewwrite.ReviewAddRequest;
-import com.javaex.dto.reviewwrite.ReviewAddResponse;
-import com.javaex.dto.reviewwrite.ReviewModifyRequest;
-import com.javaex.dto.reviewwrite.StyleDto;
+import com.javaex.dto.reviewwrite.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -22,13 +19,13 @@ public interface ReviewWriteDao {
 
     int checkGenre(Long genreNo);
 
-    void addGenre(ReviewAddRequest reviewAddRequest);
+    void addGenre(String genreName);
 
     int checkBook(Long bookNo);
 
     int findByBookTitle(String bookTitle);
 
-    int addBook(ReviewAddRequest reviewAddRequest);
+    int addBook(BookDto bookDto);
 
     int addReview(ReviewAddRequest reviewAddRequest);
 
@@ -41,25 +38,7 @@ public interface ReviewWriteDao {
     int checkReviewWriter(Map<String, Long> reviewWriterMap);
 
     int checkBookUpdate(ReviewModifyRequest reviewModifyRequest);
-	/*
-	
 
+    int modifyReview(ReviewModifyRequest reviewModifyRequest);
 
-	public int checkBook(String bookTitle) {
-		int result = sqlSession.selectOne("reviewwrite.checkBookStr", bookTitle);
-		
-		System.out.println(result + "건 | db에 있는 책 정보");
-		
-		return result;
-	}
-
-
-
-	public int modifyReview(Map<String, Object> map) {
-		int result = sqlSession.update("reviewwrite.modifyReview", map);
-		
-		System.out.println(result + "건 | 서평 수정 완료");
-		
-		return result;
-	}*/
 }

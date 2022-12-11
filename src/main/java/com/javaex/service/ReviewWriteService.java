@@ -54,14 +54,14 @@ public class ReviewWriteService {
 		int result = reviewWriteDao.checkGenre(reviewAddRequest.getGenreNo());
 		if (result == 0) {
 			// 1. 장르 테이블 넣기
-			reviewWriteDao.addGenre(reviewAddRequest);
+			reviewWriteDao.addGenre(reviewAddRequest.getGenreName());
 		}
 
 		// 2-1. 책 저장되어 있는지 확인
 		int result2 = reviewWriteDao.checkBook(reviewAddRequest.getBookNo());
 		if (result2 == 0) {
 			// 2. books 테이블 넣기
-			reviewWriteDao.addBook(reviewAddRequest);
+			reviewWriteDao.addBook(new BookDto(reviewAddRequest));
 		}
 
 		// 3. review 테이블에 넣기
@@ -143,21 +143,21 @@ public class ReviewWriteService {
 		return reviewWriteDao.checkReviewWriter(reviewWriterMap);
 	}
 
-	/*public int modifyReview(ReviewModifyRequest reviewModifyRequest) {
+	public int modifyReview(ReviewModifyRequest reviewModifyRequest) {
 		// 해당 서평의 bookNo와 새로 수정한 서평의 bookNo가 일치하는지( 책이 바꿔었는지 ) && db에 없는 책일 경우
 		if (reviewWriteDao.checkBookUpdate(reviewModifyRequest) == 0 && reviewWriteDao.checkBook(reviewModifyRequest.getBookNo()) == 0) {
-			System.out.println("책도 수정한 경우");
-			reviewWriteDao.addGenre(map);
-			reviewWriteDao.addBook(map);
+			log.info("책도 수정한 경우");
+			reviewWriteDao.addGenre(reviewModifyRequest.getGenreName());
+			BookDto bookDto = new BookDto(reviewModifyRequest);
+			reviewWriteDao.addBook(bookDto);
 
-			if (reviewWriteDao.checkBook(map) == 0) { // db에 없는 책일 경우
-				reviewWriteDao.addGenre(map);
-				reviewWriteDao.addBook(map);
+			if (reviewWriteDao.checkBook(bookDto.getBookNo()) == 0) { // db에 없는 책일 경우
+				reviewWriteDao.addGenre(reviewModifyRequest.getGenreName());
+				reviewWriteDao.addBook(bookDto);
 			}
-
 		}
 
-		return reviewWriteDao.modifyReview(map);
-	}*/
+		return reviewWriteDao.modifyReview(reviewModifyRequest);//reviewModify로 변경
+	}
 
 }
