@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javaex.dto.reviewwrite.EmotionStyleResponse;
 import com.javaex.dto.reviewwrite.ReviewAddRequest;
 import com.javaex.dto.reviewwrite.ReviewAddResponse;
+import com.javaex.dto.reviewwrite.ReviewModifyRequest;
+import com.javaex.dto.user.UserDto;
+import com.javaex.service.MainService;
 import com.javaex.service.ReviewWriteService;
 import com.javaex.service.UserService;
 import com.javaex.util.HttpUtil;
@@ -29,6 +32,8 @@ import java.util.Map;
 public class ReviewWriteController {
     private final ReviewWriteService reviewWriteService;
     private final UserService userService;
+
+    private final MainService mainService;
 
     @GetMapping("/search-book")
     public String searchBook(@RequestParam String query,
@@ -113,7 +118,7 @@ public class ReviewWriteController {
         return reviewWriteService.getPrevReviewInfo(reviewNo);
     }
 
-    /*@PutMapping("")
+    @PutMapping("")
     public Map<String, String> modifyReview(@RequestBody ReviewModifyRequest reviewModifyRequest,
                                             Authentication authentication) {
         log.info("modifyReview : {}", reviewModifyRequest);
@@ -139,27 +144,27 @@ public class ReviewWriteController {
         resultMap.put("redirect", redirect);
 
         return resultMap;
-    }*/
+    }
 
     /* 서평쓰기 (서평 플레이리스트에 추가 모달), 내 서재, 남서재, 상세페이지, 취향저격 홈 */
-	/*@ResponseBody
-	@RequestMapping("/getMyPlaylist")
-	public List<PlaylistVo> getMyPlaylist(HttpSession session) {
-		System.out.println("ReviewWriterController > getMyPlaylist");
-		int userNo = ((UserVo) session.getAttribute("authUser")).getUserNo();
-		return mainDao.getMyPlaylist(userNo);
-	}
-	
-	@ResponseBody
-	@RequestMapping("/addReviewToPly")
-	public int addReviewToPly(@RequestParam(value="playlistNo")int playlistNo, 
-			                   @RequestParam(value="reviewNo") int reviewNo) {
-		System.out.println("ReviewWriterController > addReviewToPly");
-		
-		Map<String, Object> map = new HashMap<String, Object>();
+	/*@GetMapping("/my-playlist")
+	public List<PlaylistVo> getMyPlaylist(Authentication authentication) {
+		log.info("getMyPlaylist");
+        String getUserEmail = authentication.getName();
+        //email로 user 가져오기
+        Long userNo = userService.findByUserEmail(getUserEmail).getUserNo();
+		return mainService.getMyPlaylist(userNo);
+	}*/
+
+
+	@PutMapping("/{playlist-no}/playlist")//리뷰 플레이리스트에 등록
+	public int addReviewToPly(@PathVariable("playlist-no")Long playlistNo,
+			                   @RequestParam(value="review-no") Long reviewNo) {
+		log.info("addReviewToPly");
+
+		Map<String, Object> map = new HashMap<>();
 		map.put("playlistNo", playlistNo);
 		map.put("reviewNo", reviewNo);
-		
-		return mainDao.addReviewToPly(map);
-	}*/
+		return mainService.addReviewToPly(map);
+	}
 }
