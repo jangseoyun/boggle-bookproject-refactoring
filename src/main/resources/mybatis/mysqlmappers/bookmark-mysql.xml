@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="bookmark">
+<mapper namespace="com.javaex.dao.BookmarkDao">
 
-    <select id="bookMarkList" parameterType="int" resultType="BookmarkVo">
+    <select id="bookMarkList" parameterType="String" resultType="com.javaex.dto.bookmark.BookMarkListResponse">
 		<![CDATA[
-        select bu.book_no bookNo,
-               b.book_title,
-               bu.user_no userNo,
-               b.book_url,
-               b.cover_url,
-               b.author,
-               bu.bookmark_date
-        from book_user bu,
-             books b
-        where bu.book_no = b.book_no
-          and user_no = #{userNo}
-        order by bu.bookmark_date desc
+		select usermark.bookNo bookNo,
+			   usermark.USER_NO userNo,
+			   usermark.EMAIL email,
+			   usermark.BOOKMARK_DATE bookmarkDate,
+			   book.BOOK_TITLE bookTitle,
+			   book.BOOK_URL bookUrl,
+			   book.COVER_URL coverUrl,
+			   book.AUTHOR author
+		from (select bu.book_no bookNo,
+					 bu.bookmark_date,
+					 u.USER_NO,
+					 u.EMAIL
+			  from USERS u,
+				   BOOK_USER bu
+			  where u.USER_NO = bu.USER_NO
+				and u.EMAIL = #{userEmail}) usermark,
+			 BOOKS book
+		where book.BOOK_NO = usermark.bookNo
         ]]>
 	</select>
 
-    <select id="List5" parameterType="int" resultType="BookmarkVo">
+    <!--<select id="List5" parameterType="Long" resultType="com.javaex.vo.BookmarkVo">
 		<![CDATA[
         select b.book_no bookNo,
                b.book_title,
@@ -39,6 +45,6 @@
                 and user_no = #{userNo}
               order by bu.bookmark_date desc) b limit 5
         ]]>
-	</select>
+	</select>-->
 
 </mapper>
