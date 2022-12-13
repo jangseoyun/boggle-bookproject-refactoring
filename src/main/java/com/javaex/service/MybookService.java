@@ -1,146 +1,148 @@
 package com.javaex.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.javaex.dao.MybookDao;
-import com.javaex.vo.MybookVo;
+import com.javaex.dto.mybook.*;
+import com.javaex.dto.user.UserDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-@Repository
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class MybookService {
-	
-	//필드
-	@Autowired
-	private  MybookDao mybookDao;
-	
-	//유저번호 입력시 해당유저 서평리스트 출력해주는 메소드
-	public List<MybookVo> list(int userNo){
-		System.out.println("mybookService.list()");
-		
-		List<MybookVo> mbList = mybookDao.getList(userNo);
-		
-		return mbList;
-	}
-	
-	//유저번호 입력시 해당유저 서평리스트 출력해주는 메소드(최신순)
-	public List<MybookVo> popularlist(int userNo){
-		System.out.println("mybookService.popularlist()");
-		
-		List<MybookVo> mbList = mybookDao.getPopular(userNo);
-		
-		return mbList;
-	}
-	
-	
-	//좋아요 여부 확인
-	public int likeok(MybookVo checklike) {
-		//System.out.println("mybookService.likeok()");
 
-		int count = mybookDao.checklike(checklike);
+    private final MybookDao mybookDao;
+    private final UserService userService;
 
-		return count;
-	}
-	
-	
-	//좋아요 확인, 좋아요 몇개인지 확인하는 메소드
-	public MybookVo likecnt(MybookVo checklike) {
-		//System.out.println("mybookService.likeok()");
-		
-		//좋아요 여부 확인
-		int count = mybookDao.checklike(checklike);
-		
-		//좋아요 몇개인지 확인
-		MybookVo likeok = mybookDao.checklikecnt(checklike);
-		
-		//두개를 Vo에 넣기
-		likeok.setLikecheck(count);		
-		
-		System.out.println(likeok);
-		
-		return likeok;
-	}
-	
-	//좋아요를 하는 메소드(review_user에 인서트)
-	public void like(MybookVo checklike) {
-		System.out.println("mybookService.like()");
-		
-		//현재+1
-		mybookDao.like(checklike);
-	}
-	
-	//좋아요 취소하는 메소드(review_user에서 삭제)
-	public void dislike(MybookVo checklike) {
-		System.out.println("mybookService.dislike()");
-		
-		mybookDao.dislike(checklike);
-	}
-	
-	//유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
-	public List<MybookVo> likereview(int userNo) {
-		System.out.println("mybookService.likereview");
-		
-		List<MybookVo> likereview = mybookDao.likereview(userNo);
-		
-		return likereview;
-	}
-	
-	//해당유저 넘버를 주면 좋아요한 서평리스트를 출력하는 메소드+해당유저의 서평 총 갯수 출력
-	public List<MybookVo> likelist(int userNo) {
-		System.out.println("mybookService.likelist");
-		
-		List<MybookVo> likelist = mybookDao.likelist(userNo);
-		
-		for(int i=0; i<likelist.size(); i++) {
+    /*서재 접근 유저 정보*/
+    public UserDto accessMybook(String nickname) {
+        //결과 string, userNo, nickname, 프로필 이미지
+        return userService.findByUserEmail(nickname);
+    }
 
-			int No = likelist.get(i).getUserNo();
-			
-			MybookVo reviewcnt = mybookDao.reviewcnt(No);
-			int rvcnt = reviewcnt.getLikecheck();
-			
-			likelist.get(i).setLikecheck(rvcnt);
-		}
-		
-		System.out.println("좋아요한유저서평들"+likelist);
-		
-		return likelist;
-	}
-	
-	//해당 유저의 넘버와 리뷰넘버를 주면 삭제하는 메소드
-	public int delete(MybookVo wannadelete) {
-		
-		//리뷰넘버정보를 주면 해당 리뷰를 쓴 유저 정보를 줌
-		int reviewNo = wannadelete.getReviewNo();
-		MybookVo checkuser = mybookDao.checkuser(reviewNo);
+    /*서평 최신순 리스트 조회*/
+    public List<UserReviewsResponse> getUserReviews(Long userNo) {
+        log.info("getUserReviews");
+        List<UserReviewDTO> userBookReviews = mybookDao.getUserReviews(userNo);
+        return createReviewsResponse(userBookReviews, userNo);
+    }
 
-		int reviewerNo = checkuser.getUserNo();
-		int userNo = wannadelete.getUserNo();
-		
-		System.out.println("리뷰쓴유저넘버 : "+reviewerNo);
-		System.out.println("세션유저넘버 : "+userNo);
-		
-		//그 유저넘버가 지금 세션 유저넘버(받아온값)와 같을때 삭제
-		if(reviewerNo == userNo) {
-			//삭제, 1은 로그인사용자와 삭제하려는 리뷰작성자가 같음을 의미
-			mybookDao.delete(reviewNo);
-			
-			return 1;
-		}else {
-			//삭제불가, 0은 로그인사용자와 삭제하려는 리뷰작성자가 다름을 의미
-			 return 0;
-		}
-	}
-	
-	//해당 유저넘버, 감정태그 받으면 그 리스트만 출력
-	public List<MybookVo> emoList(MybookVo emo){
-		System.out.println("mybookService.emoList");
-		
-		List<MybookVo> emoList = mybookDao.emoList(emo);
-		
-		return emoList;	
-	}
-	
-	
-	
+    /*서평 인기순 리스트 조회*/
+    public List<UserReviewsResponse> getPopularReviews(Long userNo) {
+        log.info("getPopularReviews");
+        List<UserReviewDTO> popularReviews = mybookDao.getPopularReviews(userNo);
+        return createReviewsResponse(popularReviews, userNo);
+    }
+
+    //좋아요 확인, 좋아요 몇개인지 확인하는 메소드
+    public LikeCountResponse likeCount(Long reviewNo, Long userNo) {
+        Map<String, Long> likeCountMap = new HashMap<>();
+        likeCountMap.put("reviewNo", reviewNo);
+        likeCountMap.put("userNo", userNo);
+
+        //좋아요 여부 확인
+        Long likeResultNo = mybookDao.checkLike(likeCountMap);
+        //좋아요 몇개인지 확인
+        LikeCountResponse likeCountResult = mybookDao.getLikeCount(reviewNo);
+
+        //두개를 Vo에 넣기
+        likeCountResult.setLikeCheck(likeResultNo);
+        return likeCountResult;
+    }
+
+    private List<UserReviewsResponse> createReviewsResponse(List<UserReviewDTO> reviews, Long userNo) {
+        List<UserReviewsResponse> reviewsResponseList = new ArrayList<>();
+        //중복체크 및 값 set해서 List 업데이트, 지금 로그인한 유저
+        for (UserReviewDTO review : reviews) {
+            Long reviewNo = review.getUserNo();
+            LikeStatus likeStatus = checkLike(reviewNo, userNo);
+            reviewsResponseList.add(MybookFactory.of(review, likeStatus));
+        }
+        return reviewsResponseList;
+    }
+
+    //좋아요 여부 확인
+    private LikeStatus checkLike(Long reviewNo, Long userNo) {
+        Map<String, Long> checkLikeMap = new HashMap<>();
+        checkLikeMap.put("reviewNo", reviewNo);
+        checkLikeMap.put("userNo", userNo);
+
+        Long resultNo = mybookDao.checkLike(checkLikeMap);
+        if (resultNo == 1) {
+            return LikeStatus.LIKE;
+        } else {
+            return LikeStatus.UNLIKE;
+        }
+    }
+
+    //좋아요를 하는 메소드(review_user에 인서트)
+    public LikeStatus like(Long reviewNo, Long userNo) {
+        log.info("like");
+        //현재+1
+        LikeDTO likeDto = MybookFactory.getLikeDto(reviewNo, userNo);
+        Long insertResult = mybookDao.insertLike(likeDto);
+        //TODO: 예외처리하기
+        if (insertResult == 1) {
+            return LikeStatus.LIKE;
+        } else {
+            return LikeStatus.UNLIKE;
+        }
+    }
+
+    //좋아요 취소하는 메소드(review_user에서 삭제)
+    public LikeStatus unLike(Long reviewNo, Long userNo) {
+        log.info("unLike");
+        Map<String, Long> deleteLikeMap = new HashMap<>();
+        deleteLikeMap.put("reviewNo", reviewNo);
+        deleteLikeMap.put("userNo", userNo);
+        Long deleteResult = mybookDao.deleteLike(deleteLikeMap);
+        if (deleteResult == 1) {
+            return LikeStatus.UNLIKE;
+        } else {
+            return LikeStatus.LIKE;
+        }
+    }
+
+    //해당 유저의 넘버와 리뷰넘버를 주면 삭제하는 메소드
+    public Long deleteReview(Long reviewNo) {
+        //리뷰넘버정보를 주면 해당 리뷰를 쓴 유저 정보를 줌
+        Map<String, Long> reviewNoAndUserNoMap = mybookDao.reviewByUser(reviewNo);
+        log.info("review:{} by:{} ", reviewNoAndUserNoMap.get("reviewNo"), reviewNoAndUserNoMap.get("userNo"));
+
+        //그 유저넘버가 지금 세션 유저넘버(받아온값)와 같을때 삭제
+        if(reviewNoAndUserNoMap.get("reviewNo") == reviewNoAndUserNoMap.get("userNo")) {
+            //삭제, 1은 로그인사용자와 삭제하려는 리뷰작성자가 같음을 의미
+            Long deleteResult = mybookDao.reviewDelete(reviewNo);
+            return deleteResult;
+        }else {
+            //삭제불가, 0은 로그인사용자와 삭제하려는 리뷰작성자가 다름을 의미
+            return 0L;
+        }
+    }
+
+    //해당 유저넘버, 감정태그 받으면 그 리스트만 출력
+    public List<EmotionListResponse> emoList(String emoName, Long userNo){
+        log.info("emoList");
+
+        Map<String, Object> emoNameAndUserNoMap = new HashMap<>();
+        emoNameAndUserNoMap.put("emoName", emoName);
+        emoNameAndUserNoMap.put("userNo", userNo);
+
+        List<EmotionListResponse> emotionListResponse = mybookDao.emoList(emoNameAndUserNoMap);
+        return getEmotionList(emotionListResponse, userNo);
+    }
+
+    private List<EmotionListResponse> getEmotionList(List<EmotionListResponse> emotionListResponse, Long userNo) {
+        for (EmotionListResponse emotionResponse : emotionListResponse) {
+            LikeStatus likeStatus = checkLike(emotionResponse.getReviewNo(), userNo);
+            emotionResponse.setLikeStatus(likeStatus);
+        }
+        return emotionListResponse;
+    }
 }

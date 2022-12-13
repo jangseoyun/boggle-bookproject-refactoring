@@ -215,9 +215,12 @@
 	</insert>
 
     <insert id="addReviewToPly" parameterType="map">
+        <selectKey keyProperty="playlist_review_no" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
 		<![CDATA[
         insert into playlist_review
-        values (seq_playlist_review_no.nextval, #{playlistNo}, #{reviewNo}, sysdate)
+        values (seq_playlist_review_no.nextval, #{playlistNo}, #{reviewNo}, now())
         ]]>
 	</insert>
 
