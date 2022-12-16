@@ -52,7 +52,7 @@
 				user_profile userProfile,
 				role
 		from users
-		where email = #{nickname}
+		where nickname = #{nickname}
 		]]>
 	</select>
 	

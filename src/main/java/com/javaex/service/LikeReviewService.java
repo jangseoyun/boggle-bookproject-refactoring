@@ -29,7 +29,6 @@ public class LikeReviewService {
     //유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
     public List<LatestLikeReviewsDto> getLatestLikeReviews(Long userNo) {
         List<LatestLikeReviewsDto> latestLikeReviewsResult = likeReviewDao.latestLikeReviews(userNo);
-
         // 중복체크 및 값 set해서 List 업데이트, 지금 로그인한 유저
         for (LatestLikeReviewsDto likeReview : latestLikeReviewsResult) {
             Map<String, Long> reviewNoAndUserNo = new HashMap<>();
