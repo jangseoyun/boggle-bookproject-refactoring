@@ -1,124 +1,63 @@
 package com.javaex.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.javaex.dto.likeReviews.LatestLikeReviewsDto;
+import com.javaex.dto.user.UserDto;
 import com.javaex.service.LikeReviewService;
 import com.javaex.service.UserService;
-import com.javaex.vo.LikeReviewVo;
-import com.javaex.vo.UserVo;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(value = "")
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(value = "/boggle/like-review")
 public class LikeReviewController {
 
-	// field
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private LikeReviewService likeReviewService;
+    private final UserService userService;
+    private final LikeReviewService likeReviewService;
 
-	// 취향저격(좋아요한서평페이지)
-	@RequestMapping("/{nickname}/tastereview")
-	public String tastereview(@PathVariable(value = "nickname") String nickname, HttpSession session, Model model) {
+    // 취향저격(좋아요한서평페이지)
+    @GetMapping("/{nickname}")
+    public ResponseEntity<List<LatestLikeReviewsDto>> groupByLikeReviews(@PathVariable(value = "nickname") String nicknameParam
+            , Authentication authentication) {
 
-		if (session == null || session.getAttribute("authUser") == null
-				|| session.getAttribute("authUser").equals("")) {
-			System.out.println("세션만료 혹은 잘못된 접근");
+        //만약 로그인한 사람이 없다면 로그인 페이지로
+        if (!authentication.isAuthenticated()) {
+            log.info("로그인을 해주세요");
+        }
 
-			return "user/loginForm";
-		}
+        // 세션의 닉네임
+        UserDto loginUser = userService.findByUserEmail(authentication.getName());
+        log.info("로그인 유저 이메일:{}, 지금 서재 닉네임:{}", loginUser.getNickname(), nicknameParam);
 
-		// 세션의 닉네임
-		String yours = ((UserVo) session.getAttribute("authUser")).getNickname();
-		System.out.println("로그인사람의 닉네임 : " + yours);
-		System.out.println("지금 서재 닉네임 : " + nickname);
+        // 로그인 유저, 접속 페이지 유저 확인
+        if (loginUser.getNickname().equals(nicknameParam)) {
+            // 로그인한 유저넘버
+            Long loginUserNo = loginUser.getUserNo();
+            // 해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
+            List<LatestLikeReviewsDto> latestLikeReviews = likeReviewService.getLatestLikeReviews(loginUserNo);
+            return ResponseEntity.status(HttpStatus.OK).body(latestLikeReviews);
 
-		// 세션아이디랑 지금 블로그닉네임이 같니?
-		if (nickname.equals(yours)) {
+        } else {//타 유저 페이지 접속
+            // 지금 서재 닉네임을 주면 유저넘버, 닉네임, 프로필이미지를 주는 메소드 사용
+            UserDto byNickname = userService.findByNickname(nicknameParam);
+            // 해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
+            List<LatestLikeReviewsDto> latestLikeReviews = likeReviewService.getLatestLikeReviews(byNickname.getUserNo());
+            return ResponseEntity.status(HttpStatus.OK).body(latestLikeReviews);
+        }
+    }
 
-			String result = "sameUser";
-			System.out.println(result);
-
-			// result 값 보내주기
-			model.addAttribute("result", result);
-
-			// 세션아이디의 유저넘버
-			int userNo = ((UserVo) session.getAttribute("authUser")).getUserNo();
-
-			// 해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
-			// 해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
-			List<LikeReviewVo> like1 = likeReviewService.likereview(userNo);
-			model.addAttribute("like1", like1);
-
-			// 중복체크 및 값 set해서 List 업데이트, 지금 로그인한 유저
-			for (int i = 0; i < like1.size(); i++) {
-
-				int reviewNo = like1.get(i).getReviewNo();
-
-				// 0일시 좋아요 안 한 상태, 1일시 좋아요 한 상태
-				LikeReviewVo checklike = new LikeReviewVo(reviewNo, userNo);
-				int likecheck = likeReviewService.likeok(checklike);
-
-				like1.get(i).setLikecheck(likecheck);
-
-			}
-
-			return "taste/review";
-
-		} else {
-
-			String result = nickname;
-			System.out.println("anotherUser");
-
-			// result 값 보내주기
-			model.addAttribute("result", result);
-
-			if (userService.getUser(nickname) == null) {
-				System.out.println("잘못된 접근입니다");
-
-				return "/main";
-			} else {
-
-				// 지금 서재 닉네임을 주면 유저넘버, 닉네임, 프로필이미지를 주는 메소드 사용
-				UserVo otherUser = userService.getUser(nickname);
-				int userNo = otherUser.getUserNo();
-				model.addAttribute("otherUser", otherUser);
-
-				// 해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
-				List<LikeReviewVo> like1 = likeReviewService.likereview(userNo);
-				model.addAttribute("like1", like1);
-
-				// 중복체크 및 값 set해서 List 업데이트, 지금 로그인한 유저
-				for (int i = 0; i < like1.size(); i++) {
-
-					int reviewNo = like1.get(i).getReviewNo();
-
-					// 0일시 좋아요 안 한 상태, 1일시 좋아요 한 상태
-					LikeReviewVo checklike = new LikeReviewVo(reviewNo, userNo);
-					int likecheck = likeReviewService.likeok(checklike);
-
-					like1.get(i).setLikecheck(likecheck);
-
-				}
-
-				return "taste/review";
-			}
-
-		}
-	}
-	
-	   //삭제 버튼을 눌렀을때의 기능
-	   @ResponseBody
+    //삭제 버튼을 눌렀을때의 기능
+	   /*@ResponseBody
 	   @RequestMapping("/delete1")
 	   public int delete1(HttpSession session,
 			   		   @RequestBody LikeReviewVo clickReview) {
@@ -181,5 +120,5 @@ public class LikeReviewController {
 
 			return likeok;
 		}
-	}
+	}*/
 }

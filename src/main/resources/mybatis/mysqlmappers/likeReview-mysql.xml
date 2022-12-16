@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<mapper namespace="com.javaex.dao.LikeReviewDao">
 
-<mapper namespace="likereview">
+    <resultMap id="reviewNoAndUserNoResult" type="map">
+        <result property="reviewNo" column="review_no"/>
+        <result property="userNo" column="userNo"/>
+    </resultMap>
 
     <select id="selectList" resultType="LikeReviewVo" parameterType="int">
 		<![CDATA[
@@ -55,11 +58,10 @@
 	</select>
 
 
-    <!-- checklike -->
-    <select id="checklike" resultType="LikeReviewVo" parameterType="LikeReviewVo">
+    <!-- checkReviewLike -->
+    <select id="checkReviewLike" resultType="Long" parameterType="map">
 		<![CDATA[
-        select user_no   userNo,
-               review_no reviewNo
+        select count(*)
         from review_user
         where user_no = #{userNo}
           and review_no = #{reviewNo}
@@ -128,8 +130,8 @@
 	</select>
 
     <!-- 좋아요 최신순에따른 ,유저 n번이 좋아요한 서평 -->
-    <!-- like1 -->
-    <select id="like1" resultType="LikeReviewVo" parameterType="int">
+    <!-- latestLikeReviews -->
+    <select id="latestLikeReviews" resultType="com.javaex.dto.likeReviews.LatestLikeReviewsDto" parameterType="Long">
 		<![CDATA[
         select r.reviewLikeDate,
                r.reviewNo,
@@ -140,7 +142,7 @@
                r.reviewContent,
                r.styleNo,
                r.emoName,
-               IFNULL(r.likecnt, 0) likecnt,
+               IFNULL(r.likecnt, 0) likeCnt,
                r.reviewDate
         from (select ru.review_like_date reviewLikeDate,
                      r.reviewNo,
@@ -207,78 +209,79 @@
     <!-- likelist -->
     <select id="likelist" resultType="LikeReviewVo" parameterType="int">
 		<![CDATA[
-		select r.reviewLikeDate,
-			   r.reviewNo,
-			   r.bookTitle,
-			   r.bookNo,
-			   r.userNo,
-			   r.nickname,
-			   r.reviewContent,
-			   r.styleNo,
-			   r.emoName,
-			   IFNULL(r.likecnt, 0) likecnt,
-			   r.reviewDate,
-			   r.user_profile    userPro
-		from (select ru.review_like_date reviewLikeDate,
-					 r.reviewNo,
-					 r.bookTitle,
-					 r.bookNo,
-					 r.userNo,
-					 r.nickname,
-					 r.reviewContent,
-					 r.styleNo,
-					 r.emoName,
-					 r.likecnt,
-					 r.reviewDate,
-					 r.user_profile
-			  from (select r.review_no                          reviewNo,
-						   b.book_title                         bookTitle,
-						   b.book_no                            bookNo,
-						   r.user_no                            userNo,
-						   r.nickname,
-						   r.review_content                     reviewContent,
-						   r.style_no                           styleNo,
-						   r.emo_name                           emoName,
-						   r.likecnt,
-						   r.user_profile,
-						   date_format(r.review_date, '%Y/%m/%d') reviewDate
-					from (select r.review_no,
-								 ru.likecnt,
-								 r.style_no,
-								 r.emo_name,
-								 r.user_no,
-								 r.book_no,
-								 r.nickname,
-								 r.review_content,
-								 r.review_date,
-								 r.user_profile
-						  from (select r.review_no,
-									   s.style_no,
-									   e.emo_no,
-									   e.emo_name,
-									   r.book_no,
-									   u.user_no,
-									   u.nickname,
-									   r.review_content,
-									   r.review_date,
-									   u.user_profile
-								from review r,
-									 style s,
-									 emotion e,
-									 users u
-								where e.emo_no = s.emo_no
-								  and r.style_no = s.style_no
-								  and r.user_no = u.user_no) r left outer join
-							   (select review_no, count(review_no) likecnt
-								from review_user
-								group by review_no) ru
-							   on r.review_no = ru.review_no) r,
-						 books b
-					where r.book_no = b.book_no) r,
-				   review_user ru
-			  where ru.review_no = r.reviewNo
-				and user_no = #{userNo}
-			  ORDER BY reviewLikeDate desc) r
+        select r.reviewLikeDate,
+               r.reviewNo,
+               r.bookTitle,
+               r.bookNo,
+               r.userNo,
+               r.nickname,
+               r.reviewContent,
+               r.styleNo,
+               r.emoName,
+               IFNULL(r.likecnt, 0) likecnt,
+               r.reviewDate,
+               r.user_profile       userPro
+        from (select ru.review_like_date reviewLikeDate,
+                     r.reviewNo,
+                     r.bookTitle,
+                     r.bookNo,
+                     r.userNo,
+                     r.nickname,
+                     r.reviewContent,
+                     r.styleNo,
+                     r.emoName,
+                     r.likecnt,
+                     r.reviewDate,
+                     r.user_profile
+              from (select r.review_no                            reviewNo,
+                           b.book_title                           bookTitle,
+                           b.book_no                              bookNo,
+                           r.user_no                              userNo,
+                           r.nickname,
+                           r.review_content                       reviewContent,
+                           r.style_no                             styleNo,
+                           r.emo_name                             emoName,
+                           r.likecnt,
+                           r.user_profile,
+                           date_format(r.review_date, '%Y/%m/%d') reviewDate
+                    from (select r.review_no,
+                                 ru.likecnt,
+                                 r.style_no,
+                                 r.emo_name,
+                                 r.user_no,
+                                 r.book_no,
+                                 r.nickname,
+                                 r.review_content,
+                                 r.review_date,
+                                 r.user_profile
+                          from (select r.review_no,
+                                       s.style_no,
+                                       e.emo_no,
+                                       e.emo_name,
+                                       r.book_no,
+                                       u.user_no,
+                                       u.nickname,
+                                       r.review_content,
+                                       r.review_date,
+                                       u.user_profile
+                                from review r,
+                                     style s,
+                                     emotion e,
+                                     users u
+                                where e.emo_no = s.emo_no
+                                  and r.style_no = s.style_no
+                                  and r.user_no = u.user_no) r
+                                   left outer join
+                               (select review_no, count(review_no) likecnt
+                                from review_user
+                                group by review_no) ru
+                               on r.review_no = ru.review_no) r,
+                         books b
+                    where r.book_no = b.book_no) r,
+                   review_user ru
+              where ru.review_no = r.reviewNo
+                and user_no = #{userNo}
+              ORDER BY reviewLikeDate desc) r
         ]]>
 	</select>
 

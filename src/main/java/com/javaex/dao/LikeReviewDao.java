@@ -1,19 +1,24 @@
 package com.javaex.dao;
 
-import com.javaex.vo.LikeReviewVo;
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.javaex.dto.likeReviews.LatestLikeReviewsDto;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
+@Lazy
+@Mapper
 @Repository
-public class LikeReviewDao {
+public interface LikeReviewDao {
+	// 유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
+	List<LatestLikeReviewsDto> latestLikeReviews(Long userNo);
 
-	@Autowired(required = false)
-	private SqlSession sqlSession;
+	//좋아요 여부 체크
+	Long checkReviewLike(Map<String, Long> reviewNoAndUserNo);
 
-	/* 해당 서평 리스트 가져오기 */
+	/* 해당 서평 리스트 가져오기 *//*
 	public List<LikeReviewVo> getlist(int userNo) {
 
 		List<LikeReviewVo> lrList = sqlSession.selectList("likereview.getLRlist", userNo);
@@ -21,13 +26,7 @@ public class LikeReviewDao {
 		return lrList;
 	}
 
-	// 유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
-	public List<LikeReviewVo> likereview(int userNo) {
 
-		List<LikeReviewVo> likereview = sqlSession.selectList("likereview.like1", userNo);
-
-		return likereview;
-	}
 
 	// 유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평 유저목록
 	public List<LikeReviewVo> likelist(int userNo) {
@@ -45,16 +44,7 @@ public class LikeReviewDao {
 		return checkuser;
 	}
 
-	public int checklike(LikeReviewVo checklike) {
-		// System.out.println("MybookDao.checklike()");
 
-		List<LikeReviewVo> likecount = sqlSession.selectList("likereview.checklike", checklike);
-		int count = likecount.size();
-
-		// System.out.println(count+"건 조회됨");
-
-		return count;
-	}
 
 	public LikeReviewVo checklikecnt(LikeReviewVo checklike) {
 		// System.out.println("MybookDao.checklike()");
@@ -92,6 +82,6 @@ public class LikeReviewDao {
 		LikeReviewVo reviewcnt = sqlSession.selectOne("likereview.reviewcnt", userNo);
 
 		return reviewcnt;
-	}
+	}*/
 
 }

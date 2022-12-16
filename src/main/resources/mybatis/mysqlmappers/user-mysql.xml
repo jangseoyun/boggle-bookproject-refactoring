@@ -41,6 +41,20 @@
 		where email = #{email}
 		]]>
 	</select>
+
+	<!-- 유저 단일 조회 -->
+	<select id="findByNickname" resultType="com.javaex.dto.user.UserDto" parameterType="String">
+		<![CDATA[
+		select  email,
+				user_no userNo,
+				user_name username,
+				nickname,
+				user_profile userProfile,
+				role
+		from users
+		where email = #{nickname}
+		]]>
+	</select>
 	
 	<!-- 회원가입 -->
 	<insert id="join">
