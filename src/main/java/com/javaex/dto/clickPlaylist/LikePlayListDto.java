@@ -1,0 +1,18 @@
+package com.javaex.dto.clickPlaylist;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class LikePlayListDto {
+    private Long likeUserNo;
+    private Long playlistNo;
+    private String playlistDate;
+    private String playlistName;
+    private Long emoNo;
+    private Long writeUserNo;
+    private String nickname;
+}

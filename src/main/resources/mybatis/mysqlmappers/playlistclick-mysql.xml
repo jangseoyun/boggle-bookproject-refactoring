@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="playlistclick">
+<mapper namespace="com.javaex.dao.PlaylistClickDao">
 
-    <!-- likelistclick -->
-    <select id="likelistclick" resultType="PlaylistClickVo" parameterType="int">
+    <!-- likePlayList -->
+    <select id="likePlayList" resultType="com.javaex.dto.clickPlaylist.LikePlayListDto" parameterType="Long">
 		<![CDATA[
-        select p.likeuser,
+        select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
                p.playlist_date playlistDate,
                p.playlist_name playlistName,
                p.emo_no        emoNo,
-               p.makeuser      userNo,
-               p.nickname
+               p.makeuser      writeUserNo,
+               p.nickname      nickname
         from (select up.user_no likeuser,
                      up.playlist_no,
                      p.playlist_date,
@@ -30,14 +30,14 @@
 	</select>
 
     <!-- popularplay -->
-    <select id="popularplayclick" resultType="PlaylistClickVo">
+    <select id="popularPlayList" resultType="com.javaex.dto.clickPlaylist.PlayListDto">
 		<![CDATA[
-        select p.likeuser,
+        select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
                p.playlist_name playlistName,
                p.emo_no        emoNo,
-               p.makeuser      userNo,
-               p.nickname
+               p.makeuser      writeUserNo,
+               p.nickname      nickname
         from (select up.user_no likeuser,
                      up.playlist_no,
                      p.playlist_date,
@@ -62,15 +62,15 @@
 	</select>
 
     <!-- 특정유저가 만든 플레이리스트 목록 -->
-    <!-- makelist -->
-    <select id="makelistclick" resultType="PlaylistClickVo" parameterType="int">
+    <!-- playListByUser -->
+    <select id="playListByUser" resultType="com.javaex.dto.clickPlaylist.PlayListDto" parameterType="Long">
 		<![CDATA[
-        select p.likeuser,
-               p.playlist_no   playlistNo,
-               p.playlist_name playlistName,
-               p.emo_no        emoNo,
-               p.makeuser      userNo,
-               p.nickname
+        select p.likeuser      likeUserNo,
+			   p.playlist_no   playlistNo,
+			   p.playlist_name playlistName,
+			   p.emo_no        emoNo,
+			   p.makeuser      writeUserNo,
+			   p.nickname      nickname
         from (select up.user_no likeuser,
                      up.playlist_no,
                      p.playlist_date,

@@ -1,40 +1,32 @@
 package com.javaex.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.javaex.dao.PlaylistClickDao;
+import com.javaex.dto.clickPlaylist.LikePlayListDto;
+import com.javaex.dto.clickPlaylist.PlayListDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.javaex.dao.PlaylistClickDao;
-import com.javaex.vo.PlaylistClickVo;
+import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class PlaylistClickService{
+	private final PlaylistClickDao playlistClickDao;
 	
-	//field
-	@Autowired
-	private PlaylistClickDao playlistClickDao;
-	
-	//좋아요한 플레이리스트 리스트출력
-	public List<PlaylistClickVo> likelistclick (int userNo){
-		
-		List<PlaylistClickVo> likeplayclick = playlistClickDao.likelistclick(userNo);
-		System.out.println(likeplayclick);
-		
-		return likeplayclick;
+	/*좋아요한 플레이리스트 목록*/
+	public List<LikePlayListDto> getLikePlayList (Long userNo){
+		return playlistClickDao.likePlayList(userNo);
 	}
-	
-	public List<PlaylistClickVo> popularlistclick(){
-		List<PlaylistClickVo> popularplayclick = playlistClickDao.popularlistclick();
-		System.out.println(popularplayclick);
-		
-		return popularplayclick;
+
+	/*인기순 플레이리스트 목록*/
+	public List<PlayListDto> popularPlayList(){
+		return playlistClickDao.popularPlayList();
 	}
-	
-	public List<PlaylistClickVo> makelistclick(int userNo){
-		List<PlaylistClickVo> makelistclick = playlistClickDao.makelistclick(userNo);
-		System.out.println(makelistclick);
-		
-		return makelistclick;
+
+	/*특정 유저 플레이리스트 목록*/
+	public List<PlayListDto> playListByUser(Long userNo){
+		return playlistClickDao.playListByUser(userNo);
 	}
 }
