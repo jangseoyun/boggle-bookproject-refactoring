@@ -20,14 +20,6 @@ public class LikeReviewService {
 
     private final LikeReviewDao likeReviewDao;
 
-//	/* 해당 유저가 좋아요한 서평 리스트 */
-//	public List<LikeReviewVo> getlist(int userNo) {
-//		System.out.println("Service.getLikeReviewList");
-//
-//		List<LikeReviewVo> lrList = likeReviewDao.getlist(userNo);
-//		return lrList;
-//	}
-
     //유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
     public List<LatestLikeReviewsDto> getLatestLikeReviews(Long userNo) {
         List<LatestLikeReviewsDto> latestLikeReviewsResult = likeReviewDao.latestLikeReviews(userNo);
@@ -80,64 +72,55 @@ public class LikeReviewService {
         reviewNoAndUserNo.put("reviewNo", reviewNo);
         reviewNoAndUserNo.put("userNo", userNo);
 
+        //loginUser reviewNo-like 여부 체크
         Long checkReviewLike = likeReviewDao.checkReviewLike(reviewNoAndUserNo);
+
         //좋아요 몇개인지 확인
         ReviewLikeTotalCountResult reviewLikeTotalCountResult = likeReviewDao.checkLikeTotalCount(reviewNo);
+
         //두개를 Vo에 넣기
         reviewLikeTotalCountResult.setCheckLike(checkReviewLike);
 
         return reviewLikeTotalCountResult;
     }
 
-    //좋아요를 하는 메소드(review_user에 인서트)
-    public void like(LikeReviewVo checklike) {
-        //현재+1
-        likeReviewDao.like(checklike);
+    public LikeStatus likeOrDisLike(Long reviewNo, Long loginUserNo, LikeStatus likeStatus) {
+        Map<String, Long> reviewNoAndUserNo = new HashMap<>();
+        reviewNoAndUserNo.put("reviewNo", reviewNo);
+        reviewNoAndUserNo.put("userNo", loginUserNo);
+        reviewNoAndUserNo.put("reviewUserNo", null);
+
+        // 좋아요를 안한경우
+        if (likeStatus.equals(LikeStatus.UNLIKE)) {//0
+            // review_user table like insert
+            return like(reviewNoAndUserNo);
+        } else {
+            // review_user에서 삭제
+            return dislike(reviewNoAndUserNo);
+        }
     }
 
-    //유저번호 입력시 해당유저 서평리스트 출력해주는 메소드
-	/*public List<LikeReviewVo> list(int userNo){
-		
-		List<LikeReviewVo> lrList = likeReviewDao.getlist(userNo);
-		
-		return lrList;
-	}
-	
-	
-	//좋아요 여부 확인
+    //좋아요를 하는 메소드(review_user에 인서트)
+    private LikeStatus like(Map<String, Long> reviewNoAndUserNo) {
+        log.info("{} 번 서평 좋아요 요청", reviewNoAndUserNo.get("reviewNo"));
+        //현재+1
+        int reviewLikeResult = likeReviewDao.reviewLike(reviewNoAndUserNo);
+        if (reviewLikeResult == 1) {
+            return LikeStatus.LIKE;
+        } else {
+            return LikeStatus.LIKE_FAIL;
+        }
+    }
 
-		
-
-		
-
-		
-		//좋아요 취소하는 메소드(review_user에서 삭제)
-		public void dislike(LikeReviewVo checklike) {
-			likeReviewDao.dislike(checklike);
-		}
-		
-		//해당유저 넘버를 주면 좋아요한 서평리스트를 출력하는 메소드+해당유저의 서평 총 갯수 출력
-		public List<LikeReviewVo> likelist(int userNo) {
-			
-			List<LikeReviewVo> likelist = likeReviewDao.likelist(userNo);
-			
-			for(int i=0; i<likelist.size(); i++) {
-				
-				int No = likelist.get(i).getUserNo();
-				
-				LikeReviewVo reviewcnt = likeReviewDao.reviewcnt(No);
-				int rvcnt = reviewcnt.getLikecheck();
-				
-				likelist.get(i).setLikecheck(rvcnt);
-			}
-			
-			System.out.println("좋아요한유저서평들"+likelist);
-			
-			return likelist;
-		}
-	
-	
-	*/
-
+    //좋아요 취소하는 메소드(review_user에서 삭제)
+    private LikeStatus dislike(Map<String, Long> reviewNoAndUserNo) {
+        log.info("{} 번 서평 좋아요 삭제 요청", reviewNoAndUserNo.get("reviewNo"));
+        int reviewDislike = likeReviewDao.reviewDislike(reviewNoAndUserNo);
+        if (reviewDislike == 1) {
+            return LikeStatus.UNLIKE;
+        } else {
+            return LikeStatus.UNLIKE_FAIL;
+        }
+    }
 
 }

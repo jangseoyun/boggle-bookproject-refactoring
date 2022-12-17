@@ -3,6 +3,7 @@ package com.javaex.controller;
 import com.javaex.dto.likeReviews.DeleteResult;
 import com.javaex.dto.likeReviews.LatestLikeReviewsDto;
 import com.javaex.dto.likeReviews.ReviewLikeTotalCountResult;
+import com.javaex.dto.mybook.LikeStatus;
 import com.javaex.dto.user.UserDto;
 import com.javaex.service.LikeReviewService;
 import com.javaex.service.UserService;
@@ -27,7 +28,7 @@ public class LikeReviewController {
     // 취향저격(좋아요한서평페이지)
     @GetMapping("/{nickname}")
     public ResponseEntity<List<LatestLikeReviewsDto>> groupByLikeReviews(@PathVariable(value = "nickname") String nicknameParam
-            , Authentication authentication) {
+                                                                        , Authentication authentication) {
 
         //만약 로그인한 사람이 없다면 로그인 페이지로
         if (!authentication.isAuthenticated()) {
@@ -58,7 +59,7 @@ public class LikeReviewController {
     //삭제 버튼을 눌렀을때의 기능
     @DeleteMapping("/{review-no}")//review-userNo, reviewNo
     public DeleteResult reviewDelete(@PathVariable("review-no") Long deleteReviewNo
-            , Authentication authentication) {
+                                    , Authentication authentication) {
         //로그인 유저넘버
         String email = authentication.getName();
         UserDto loginUser = userService.findByUserEmail(email);
@@ -69,8 +70,8 @@ public class LikeReviewController {
         return deleteResult;
     }
 
-    @GetMapping("/{review-no}")
-    public LikeReviewVo like(@PathVariable("review-no") Long reviewNo //reviewNoParam 클릭한 서평 넘버, userNo
+    @GetMapping("")
+    public LikeStatus like(@RequestParam("review-no") Long reviewNo //reviewNoParam 클릭한 서평 넘버, userNo
                              , Authentication authentication) {
         // 세션아이디의 유저넘버
         String email = authentication.getName();
@@ -80,22 +81,10 @@ public class LikeReviewController {
         log.info("로그인한 유저 넘버:{}, 클릭한 서평 넘버:{}", loginUser.getUserNo(), reviewNo);
 
         // 해당유저가 좋아요를 했는지 안했는지, 좋아요가 몇갠지 불러오기.
-        ReviewLikeTotalCountResult reviewLikeTotalCountResult = likeReviewService.likeCount(loginUser.getUserNo(), reviewNo);
+        ReviewLikeTotalCountResult reviewLikeTotalCountResult = likeReviewService.likeCount(reviewNo, loginUser.getUserNo());
         log.info("좋아요 갯수:{} ", reviewLikeTotalCountResult.getLikeTotalCount());
         log.info("좋아요 여부 확인:{} ", reviewLikeTotalCountResult.getCheckLike());
 
-        // 좋아요를 안한경우
-        if (likeok.getLikecheck() == 0) {
-            // review_user table에 인서트
-            likeReviewService.like(checklike);
-            log.info("{} 번 서평 좋아요", checklike.getReviewNo());
-            return likeok;
-            // 좋아요를 이미 한 경우
-        } else {
-            // review_user에서 삭제
-            likeReviewService.dislike(checklike);
-            System.out.println(checklike.getReviewNo() + "번 서평 좋아요 취소");
-            return likeok;
-        }
+        return likeReviewService.likeOrDisLike(reviewLikeTotalCountResult.getReviewNo(), loginUser.getUserNo(), reviewLikeTotalCountResult.getCheckLike());
     }
 }

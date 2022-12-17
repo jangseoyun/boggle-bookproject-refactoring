@@ -26,6 +26,10 @@ public interface LikeReviewDao {
 
 	ReviewLikeTotalCountResult checkLikeTotalCount(Long reviewNo);
 
+	int reviewLike(Map<String, Long> reviewNoAndUserNo);
+
+	int reviewDislike(Map<String, Long> reviewNoAndUserNo);
+
 	/* 해당 서평 리스트 가져오기 *//*
 	public List<LikeReviewVo> getlist(int userNo) {
 
@@ -33,8 +37,6 @@ public interface LikeReviewDao {
 		System.out.println(lrList);
 		return lrList;
 	}
-
-
 
 	// 유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평 유저목록
 	public List<LikeReviewVo> likelist(int userNo) {
@@ -45,18 +47,6 @@ public interface LikeReviewDao {
 	}
 
 
-
-	public void like(LikeReviewVo checklike) {
-
-		int count = sqlSession.insert("likereview.like", checklike);
-		System.out.println(count + "건을 좋아요하였습니다.");
-	}
-
-	public void dislike(LikeReviewVo checklike) {
-
-		int count = sqlSession.delete("likereview.dislike", checklike);
-		System.out.println(count + "건을 좋아요 취소하였습니다.");
-	}
 
 
 	// 유저넘버 입력시 해당 유저의 총 서평갯수

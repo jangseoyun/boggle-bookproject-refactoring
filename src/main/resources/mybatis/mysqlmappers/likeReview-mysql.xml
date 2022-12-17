@@ -69,15 +69,18 @@
 	</select>
 
     <!-- like -->
-    <insert id="like" parameterType="LikeReviewVo">
+    <insert id="reviewLike" parameterType="map">
+		<selectKey keyProperty="review_user_no" resultType="Long" order="BEFORE">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		<![CDATA[
         insert into review_user
-        values (SEQ_REVIEW_USER_NO.nextval, #{userNo}, #{reviewNo}, sysdate)
+        values (#{reviewUserNo}, #{userNo}, #{reviewNo}, now())
         ]]>
 	</insert>
 
     <!-- dislike -->
-    <delete id="dislike" parameterType="LikeReviewVo">
+    <delete id="reviewDislike" parameterType="map">
 		<![CDATA[
         delete
         from review_user
@@ -90,7 +93,7 @@
     <select id="checkLikeTotalCount" resultType="com.javaex.dto.likeReviews.ReviewLikeTotalCountResult" parameterType="Long">
 		<![CDATA[
         select r.review_no          reviewNo,
-               r.user_no            userNo,
+               r.user_no            reviewByUserNo,
                r.nickname           nickname,
                IFNULL(r.likecnt, 0) likeTotalCount
         from (select r.review_no,
