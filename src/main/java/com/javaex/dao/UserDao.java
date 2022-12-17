@@ -17,8 +17,8 @@ public interface UserDao {
 	int join(JoinDto joinRequest);
 	//로그인
 	LoginDto login(String email);
-
 	//단일 유저 조회
 	UserDto findByUserEmail(String email);
 
+	UserDto findByNickname(String nickname);
 }

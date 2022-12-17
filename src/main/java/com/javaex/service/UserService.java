@@ -58,4 +58,8 @@ public class UserService {
     public UserDto findByUserEmail(String email) {
         return userDao.findByUserEmail(email);
     }
+
+    public UserDto findByNickname(String nickname) {
+        return userDao.findByNickname(nickname);
+    }
 }
