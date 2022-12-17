@@ -1,6 +1,8 @@
 package com.javaex.controller;
 
+import com.javaex.dto.likeReviews.DeleteResult;
 import com.javaex.dto.likeReviews.LatestLikeReviewsDto;
+import com.javaex.dto.likeReviews.ReviewLikeTotalCountResult;
 import com.javaex.dto.user.UserDto;
 import com.javaex.service.LikeReviewService;
 import com.javaex.service.UserService;
@@ -9,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,68 +56,46 @@ public class LikeReviewController {
     }
 
     //삭제 버튼을 눌렀을때의 기능
-	   /*@ResponseBody
-	   @RequestMapping("/delete1")
-	   public int delete1(HttpSession session,
-			   		   @RequestBody LikeReviewVo clickReview) {
-	      
-	      //세션아이디의 유저넘버
-	      int userNo = ((UserVo)session.getAttribute("authUser")).getUserNo();
-	      //클릭한 서평 넘버
-	      int clickNo = clickReview.getReviewNo();
-	      
-	      System.out.println("로그인한 유저 넘버 : " + userNo);
-	      System.out.println("클릭한 서평 넘버 : " + clickNo);
-	      
-	      LikeReviewVo delete = new LikeReviewVo(clickNo, userNo);
+    @DeleteMapping("/{review-no}")//review-userNo, reviewNo
+    public DeleteResult reviewDelete(@PathVariable("review-no") Long deleteReviewNo
+            , Authentication authentication) {
+        //로그인 유저넘버
+        String email = authentication.getName();
+        UserDto loginUser = userService.findByUserEmail(email);
+        log.info("로그인한 유저 넘버:{}, 클릭한 서평 넘버:{}", loginUser.getUserNo(), deleteReviewNo);
 
-	      //해당 유저의 서평일 경우에만 삭제가 가능하게 하기
-	      int checkuser = likeReviewService.delete(delete);
-	      
-	      //값이 1일때는 삭제하려는 리뷰의 작성자와 로그인사용자가 같음을 의미 
-	      return checkuser;
-	   }
-	   
+        //해당 유저의 서평일 경우에만 삭제가 가능하게 하기
+        DeleteResult deleteResult = likeReviewService.deleteByReviewNo(deleteReviewNo, loginUser.getUserNo());
+        return deleteResult;
+    }
 
-	@ResponseBody
-	@RequestMapping("/like1")
-	public LikeReviewVo like1(HttpSession session, @RequestBody LikeReviewVo clickReview) {
+    @GetMapping("/{review-no}")
+    public LikeReviewVo like(@PathVariable("review-no") Long reviewNo //reviewNoParam 클릭한 서평 넘버, userNo
+                             , Authentication authentication) {
+        // 세션아이디의 유저넘버
+        String email = authentication.getName();
+        UserDto loginUser = userService.findByUserEmail(email);
 
-		// 세션아이디의 유저넘버
-		int userNo = ((UserVo) session.getAttribute("authUser")).getUserNo();
-		// 클릭한 서평 넘버
-		int clickNo = clickReview.getReviewNo();
+        // 클릭한 서평 넘버
+        log.info("로그인한 유저 넘버:{}, 클릭한 서평 넘버:{}", loginUser.getUserNo(), reviewNo);
 
-		System.out.println("로그인한 유저 넘버 : " + userNo);
-		System.out.println("클릭한 서평 넘버 : " + clickNo);
+        // 해당유저가 좋아요를 했는지 안했는지, 좋아요가 몇갠지 불러오기.
+        ReviewLikeTotalCountResult reviewLikeTotalCountResult = likeReviewService.likeCount(loginUser.getUserNo(), reviewNo);
+        log.info("좋아요 갯수:{} ", reviewLikeTotalCountResult.getLikeTotalCount());
+        log.info("좋아요 여부 확인:{} ", reviewLikeTotalCountResult.getCheckLike());
 
-		LikeReviewVo checklike = new LikeReviewVo(clickNo, userNo);
-
-		// 해당유저가 좋아요를 했는지 안했는지, 좋아요가 몇갠지 불러오기.
-		LikeReviewVo likeok = likeReviewService.likecnt(checklike);
-
-		System.out.println("좋아요 갯수 : " + likeok.getLikecnt());
-		System.out.println("좋아요 여부 확인 : " + likeok.getLikecheck());
-
-		// 좋아요를 안한경우
-		if (likeok.getLikecheck() == 0) {
-
-			// review_user table에 인서트
-			likeReviewService.like(checklike);
-
-			System.out.println(checklike.getReviewNo() + "번 서평 좋아요");
-
-			return likeok;
-
-			// 좋아요를 이미 한 경우
-		} else {
-
-			// review_user에서 삭제
-			likeReviewService.dislike(checklike);
-
-			System.out.println(checklike.getReviewNo() + "번 서평 좋아요 취소");
-
-			return likeok;
-		}
-	}*/
+        // 좋아요를 안한경우
+        if (likeok.getLikecheck() == 0) {
+            // review_user table에 인서트
+            likeReviewService.like(checklike);
+            log.info("{} 번 서평 좋아요", checklike.getReviewNo());
+            return likeok;
+            // 좋아요를 이미 한 경우
+        } else {
+            // review_user에서 삭제
+            likeReviewService.dislike(checklike);
+            System.out.println(checklike.getReviewNo() + "번 서평 좋아요 취소");
+            return likeok;
+        }
+    }
 }

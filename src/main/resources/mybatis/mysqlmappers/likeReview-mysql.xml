@@ -3,7 +3,7 @@
 
 <mapper namespace="com.javaex.dao.LikeReviewDao">
 
-    <resultMap id="reviewNoAndUserNoResult" type="map">
+    <resultMap id="reviewByUserInfo" type="map">
         <result property="reviewNo" column="review_no"/>
         <result property="userNo" column="userNo"/>
     </resultMap>
@@ -86,13 +86,13 @@
         ]]>
 	</delete>
 
-    <!-- checklikecount -->
-    <select id="checklikecnt" resultType="LikeReviewVo" parameterType="LikeReviewVo">
+    <!-- checkLikeTotalCount -->
+    <select id="checkLikeTotalCount" resultType="com.javaex.dto.likeReviews.ReviewLikeTotalCountResult" parameterType="Long">
 		<![CDATA[
         select r.review_no          reviewNo,
                r.user_no            userNo,
-               r.nickname,
-               IFNULL(r.likecnt, 0) likecnt
+               r.nickname           nickname,
+               IFNULL(r.likecnt, 0) likeTotalCount
         from (select r.review_no,
                      ru.likecnt,
                      r.style_no,
@@ -296,8 +296,8 @@
 	</select>
 
     <!-- 리뷰넘버 n의 유저넘버 -->
-    <!-- checkuser -->
-    <select id="checkuser" resultType="LikeReviewVo" parameterType="int">
+    <!-- checkReviewByUser -->
+    <select id="checkReviewByUser" resultMap="reviewByUserInfo" parameterType="Long">
 		<![CDATA[
         select user_no   userNo,
                review_no reviewNo
@@ -307,8 +307,8 @@
 	</select>
 
     <!-- 리뷰넘버 n번의 삭제 -->
-    <!-- delete -->
-    <delete id="delete" parameterType="int">
+    <!-- deleteByReviewNo -->
+    <delete id="deleteByReviewNo" parameterType="Long">
 		<![CDATA[
         DELETE
         FROM review

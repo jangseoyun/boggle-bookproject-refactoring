@@ -1,6 +1,7 @@
 package com.javaex.dao;
 
 import com.javaex.dto.likeReviews.LatestLikeReviewsDto;
+import com.javaex.dto.likeReviews.ReviewLikeTotalCountResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -14,9 +15,16 @@ import java.util.Map;
 public interface LikeReviewDao {
 	// 유저넘버 입력시 해당유저가 가장 최근에 좋아요한 서평가져오기
 	List<LatestLikeReviewsDto> latestLikeReviews(Long userNo);
-
 	//좋아요 여부 체크
 	Long checkReviewLike(Map<String, Long> reviewNoAndUserNo);
+
+	// 리뷰 넘버 -> 유저 넘버
+	Map<String, Long> checkReviewByUser(Long reviewNo);
+
+	// 리뷰넘버정보를 주면 해당 리뷰 삭제
+	Long deleteByReviewNo(Long reviewNo);
+
+	ReviewLikeTotalCountResult checkLikeTotalCount(Long reviewNo);
 
 	/* 해당 서평 리스트 가져오기 *//*
 	public List<LikeReviewVo> getlist(int userNo) {
@@ -36,26 +44,7 @@ public interface LikeReviewDao {
 		return likelist;
 	}
 
-	// 리뷰 넘버 -> 유저 넘버
-	public LikeReviewVo checkuser(int reviewNo) {
 
-		LikeReviewVo checkuser = sqlSession.selectOne("likereview.checkuser", reviewNo);
-
-		return checkuser;
-	}
-
-
-
-	public LikeReviewVo checklikecnt(LikeReviewVo checklike) {
-		// System.out.println("MybookDao.checklike()");
-
-		// 좋아요 몇개인지 담아서 보냄
-		LikeReviewVo likecnt = sqlSession.selectOne("likereview.checklikecnt", checklike);
-
-		System.out.println("Dao좋아요갯수" + likecnt);
-
-		return likecnt;
-	}
 
 	public void like(LikeReviewVo checklike) {
 
@@ -69,12 +58,6 @@ public interface LikeReviewDao {
 		System.out.println(count + "건을 좋아요 취소하였습니다.");
 	}
 
-	// 서평 삭제
-	// 리뷰넘버정보를 주면 해당 리뷰 삭제
-	public void delete(LikeReviewVo delete) {
-
-		sqlSession.delete("likereview.delete", delete);
-	}
 
 	// 유저넘버 입력시 해당 유저의 총 서평갯수
 	public LikeReviewVo reviewcnt(int userNo) {
