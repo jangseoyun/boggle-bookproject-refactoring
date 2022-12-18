@@ -1,40 +1,25 @@
 package com.javaex.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.javaex.service.BookmarkService;
 import com.javaex.service.MybookService;
 import com.javaex.service.PlaylistService;
 import com.javaex.service.UserService;
-import com.javaex.vo.BookmarkVo;
-import com.javaex.vo.MybookVo;
-import com.javaex.vo.PlaylistVo;
-import com.javaex.vo.UserVo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "")
 public class TasteController {
 
-	// 필드
-	@Autowired
-	private MybookService mybookService;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private PlaylistService playlistService;
-	@Autowired
-	private BookmarkService bookmarkService;
+	private final MybookService mybookService;
+	private final UserService userService;
+	private final PlaylistService playlistService;
+	private final BookmarkService bookmarkService;
 
 	// 취향저격(main페이지)
-	@RequestMapping("/{nickname}/tastemain")
+	/*@RequestMapping("/{nickname}/tastemain")
 	public String tastemain(@PathVariable(value = "nickname") String nickname, HttpSession session, Model model) {
 
 		System.out.println("tastemain");
@@ -115,11 +100,11 @@ public class TasteController {
 		}
 
 		return "taste/taste-main";
-	}
+	}*/
 
 	
 	// 플레이리스트(main페이지)
-	@RequestMapping("/{nickname}/like_playlist")
+	/*@RequestMapping("/{nickname}/like_playlist")
 	public String playlistmain(@PathVariable(value = "nickname") String nickname, HttpSession session, Model model) {
 
 		System.out.println("tastemain");
@@ -182,5 +167,6 @@ public class TasteController {
 		}
 
 		return "taste/like-playlist";
-	}
+	}*/
 }
+
