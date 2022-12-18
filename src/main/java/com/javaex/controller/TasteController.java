@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(value = "")
 public class TasteController {
-
 	private final MybookService mybookService;
 	private final UserService userService;
 	private final PlaylistService playlistService;
