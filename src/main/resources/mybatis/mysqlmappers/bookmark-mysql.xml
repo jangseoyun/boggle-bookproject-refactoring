@@ -25,14 +25,14 @@
         ]]>
 	</select>
 
-    <!--<select id="List5" parameterType="Long" resultType="com.javaex.vo.BookmarkVo">
+    <select id="previewBookmarkLimitFiv" parameterType="Long" resultType="com.javaex.dto.bookmark.PreviewBookmarkDTO">
 		<![CDATA[
         select b.book_no bookNo,
-               b.book_title,
+               b.book_title bookTitle,
                b.user_no userNo,
-               b.book_url,
-               b.cover_url,
-               b.bookmark_date
+               b.book_url bookUrl,
+               b.cover_url coverUrl,
+               b.bookmark_date bookmarkDate
         from (select bu.book_no,
                      b.book_title,
                      bu.user_no,
@@ -45,6 +45,6 @@
                 and user_no = #{userNo}
               order by bu.bookmark_date desc) b limit 5
         ]]>
-	</select>-->
+	</select>
 
 </mapper>

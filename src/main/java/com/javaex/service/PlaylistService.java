@@ -1,31 +1,26 @@
 package com.javaex.service;
 
+import com.javaex.dao.PlaylistDao;
+import com.javaex.dto.playlist.LikePlaylistDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.javaex.dao.PlaylistDao;
-import com.javaex.vo.PlaylistVo;
-
-@Repository
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class PlaylistService {
-	
-	//필드
-	@Autowired
-	private PlaylistDao playlistDao; 
+	private final PlaylistDao playlistDao;
 	
 	//좋아요한 플레이리스트 리스트출력
-	public List<PlaylistVo> likelist(int userNo){
-		
-		List<PlaylistVo> likeplay = playlistDao.likelist(userNo);
-		System.out.println(likeplay);
-		
-		return likeplay;
+	public List<LikePlaylistDto> previewPlaylistLimitFiv(Long userNo){
+		return playlistDao.previewPlaylistLimitFiv(userNo);
 	}
 	
 	//인기리스트출력
-	public List<PlaylistVo> popularlist(){
+	/*public List<PlaylistVo> popularlist(){
 		
 		List<PlaylistVo> popularlist = playlistDao.popularlist();
 		System.out.println(popularlist);
@@ -40,7 +35,7 @@ public class PlaylistService {
 		System.out.println(makelist);
 		
 		return makelist;
-	}
+	}*/
 	
 	
 	

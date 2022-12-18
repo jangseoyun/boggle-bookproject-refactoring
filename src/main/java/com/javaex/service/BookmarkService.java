@@ -22,10 +22,7 @@ public class BookmarkService {
 	}
 	
 	// 유저 번호 입력시 해당유저 북마크 리스트 출력
-	/*public List<BookmarkVo> get5book(Long userNo) {
-		System.out.println("Service.get5book");
-	
-		List<BookmarkVo> get5book = bookmarkDao.List5(userNo);
-		return get5book;
-	}*/
+	public List<BookMarkListResponse> previewBookmarkLimitFiv(Long userNo) {
+		return bookmarkDao.previewBookmarkLimitFiv(userNo);
+	}
 }

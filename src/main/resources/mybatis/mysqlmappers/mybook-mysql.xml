@@ -181,7 +181,7 @@
 
     <!-- 좋아요 최신순에따른 ,유저 n번이 좋아요한 서평 -->
     <!-- like1 -->
-    <select id="like1" resultType="MybookVo" parameterType="int">
+    <select id="latestUserLikeReviews" resultType="com.javaex.dto.mybook.LatestUserLikeReviewsDTO" parameterType="Long">
 		<![CDATA[
         select r.reviewLikeDate,
                r.reviewNo,
@@ -192,7 +192,7 @@
                r.reviewContent,
                r.styleNo,
                r.emoName,
-               IFNULL(r.likecnt, 0) likecnt,
+               IFNULL(r.likecnt, 0) likeCnt,
                r.reviewDate
         from (select ru.review_like_date reviewLikeDate,
                      r.reviewNo,
@@ -257,7 +257,7 @@
 
     <!-- 유저 n번이 좋아요한 서평리스트 -->
     <!-- likelist -->
-    <select id="likelist" resultType="MybookVo" parameterType="int">
+    <select id="userLikeReviews" resultType="com.javaex.dto.mybook.LatestUserLikeReviewsDTO" parameterType="Long">
 		<![CDATA[
         select r.reviewLikeDate,
                r.reviewNo,
@@ -268,9 +268,9 @@
                r.reviewContent,
                r.styleNo,
                r.emoName,
-               NVL(r.likecnt, 0) likecnt,
+               NVL(r.likecnt, 0) likeCnt,
                r.reviewDate,
-               r.user_profile    userPro
+               r.user_profile    userProfile
         from (select ru.review_like_date reviewLikeDate,
                      r.reviewNo,
                      r.bookTitle,

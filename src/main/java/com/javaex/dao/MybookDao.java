@@ -1,9 +1,6 @@
 package com.javaex.dao;
 
-import com.javaex.dto.mybook.EmotionListResponse;
-import com.javaex.dto.mybook.LikeCountResponse;
-import com.javaex.dto.mybook.LikeDTO;
-import com.javaex.dto.mybook.UserReviewDTO;
+import com.javaex.dto.mybook.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -38,4 +35,7 @@ public interface MybookDao {
     //해당 유저넘버, 감정태그 받으면 그 리스트만 출력
     List<EmotionListResponse> emoList(Map<String, Object> emoNameAndUserNo);
 
+    List<LatestUserLikeReviewsDTO> latestUserLikeReviews(Long userNo);
+
+    List<UserLikeReviewsDTO> userLikeReviews(Long userNo);
 }

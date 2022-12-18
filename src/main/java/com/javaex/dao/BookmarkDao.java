@@ -14,6 +14,8 @@ public interface BookmarkDao {
 
 	/*북마크 리스트 */
 	List<BookMarkListResponse> bookMarkList(String userEmail);
+
+	List<BookMarkListResponse> previewBookmarkLimitFiv(Long userNo);
 	
 	/*책 수 가져오기*/
 //	public int countotal() {

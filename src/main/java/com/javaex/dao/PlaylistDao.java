@@ -1,29 +1,19 @@
 package com.javaex.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.javaex.dto.playlist.LikePlaylistDto;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
-import com.javaex.vo.PlaylistVo;
+import java.util.List;
 
+@Lazy
+@Mapper
 @Repository
-public class PlaylistDao {
-
-	@Autowired(required = false)
-	private SqlSession sqlSession;
+public interface PlaylistDao {
+	List<LikePlaylistDto> previewPlaylistLimitFiv(Long userNo);
 	
-	
-	public List<PlaylistVo> likelist(int userNo){
-		
-		List<PlaylistVo> likeplay = sqlSession.selectList("playlist.likelist", userNo);
-		System.out.println(likeplay);
-		
-		return likeplay;
-	}
-	
-	//인기리스트출력
+	/*//인기리스트출력
 	public List<PlaylistVo> popularlist(){
 		
 		List<PlaylistVo> popularlist = sqlSession.selectList("playlist.popularplay");
@@ -37,7 +27,6 @@ public class PlaylistDao {
 		List<PlaylistVo> makelist = sqlSession.selectList("playlist.makelist", userNo);
 		
 		return makelist;
-	}
-	
-	
+	}*/
+
 }

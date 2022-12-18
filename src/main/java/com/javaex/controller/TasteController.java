@@ -1,108 +1,48 @@
 package com.javaex.controller;
 
-import com.javaex.service.BookmarkService;
-import com.javaex.service.MybookService;
-import com.javaex.service.PlaylistService;
-import com.javaex.service.UserService;
+import com.javaex.dto.taste.PreviewMainResponse;
+import com.javaex.dto.user.UserDto;
+import com.javaex.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "")
+@RequestMapping(value = "/boggle/preview")
 public class TasteController {
-	private final MybookService mybookService;
-	private final UserService userService;
-	private final PlaylistService playlistService;
-	private final BookmarkService bookmarkService;
+    private final TasteService tasteService;
+    private final UserService userService;
 
-	// 취향저격(main페이지)
-	/*@RequestMapping("/{nickname}/tastemain")
-	public String tastemain(@PathVariable(value = "nickname") String nickname, HttpSession session, Model model) {
+    // 취향저격(main페이지)
+    @GetMapping("/{nickname}/main")
+    public ResponseEntity<PreviewMainResponse> previewMain(@PathVariable(value = "nickname") String nicknameParam
+            , Authentication authentication) {
 
-		System.out.println("tastemain");
-		
-		if (session == null || session.getAttribute("authUser") == null || session.getAttribute("authUser").equals("")) {
-		   System.out.println("세션만료 혹은 잘못된 접근");
-		   
-		   return "user/loginForm";
-	   }
-		
-		// 세션의 닉네임
-		String yours = ((UserVo) session.getAttribute("authUser")).getNickname();
-		System.out.println("로그인사람의 닉네임 : " + yours);
-		System.out.println("지금 서재 닉네임 : " + nickname);
+        log.info("previewMain");
+        if (!authentication.isAuthenticated()) log.info("로그인을 해주세요");
 
-		// 세션아이디랑 지금 블로그닉네임이 같니?
-		if (nickname.equals(yours)) {
+        // 세션의 닉네임
+        UserDto loginUser = userService.findByUserEmail(authentication.getName());
+        UserDto pageUser = userService.findByNickname(nicknameParam);
+        log.info("로그인사람의 닉네임:{}, 지금 서재 닉네임:{}", loginUser.getNickname(), nicknameParam);
 
-			String result = "sameUser";
-			System.out.println(result);
+        // 세션아이디랑 지금 블로그닉네임이 같니?
+        PreviewMainResponse previewMainResponse = tasteService.checkAccessUserAndViewResponse(pageUser, loginUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(previewMainResponse);
+    }
 
-			// result 값 보내주기
-			model.addAttribute("result", result);
 
-			// 세션아이디의 유저넘버
-			int userNo = ((UserVo) session.getAttribute("authUser")).getUserNo();
-
-			//해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
-			List<MybookVo> like1 = mybookService.likereview(userNo);
-			model.addAttribute("like1", like1);
-			
-			//해당유저 넘버를 주면 좋아요한 서평리스트를 출력하는 메소드+해당유저의 서평 총 갯수 출력
-			List<MybookVo> likelist = mybookService.likelist(userNo);
-			model.addAttribute("likelist", likelist);
-			
-			//해당유저 넘버를 주면 좋아요한 플레이리스트를 출력하는 메소드
-			List<PlaylistVo> likeplay = playlistService.likelist(userNo);
-			model.addAttribute("likeplay", likeplay);
-			
-			//해당유저넘버를 주면 좋아요한 책 목록을 출력하는 메소드
-			List<BookmarkVo> get5book = bookmarkService.get5book(userNo);
-			model.addAttribute("get5book", get5book);
-			
-		} else {
-
-			String result = nickname;
-			System.out.println("anotherUser");
-
-			// result 값 보내주기
-			model.addAttribute("result", result);
-			
-			if (userService.getUser(nickname) == null) {
-			   System.out.println("잘못된 접근입니다");
-			   
-			   return "/main";
-		    }
-			
-			// 지금 서재 닉네임을 주면 유저넘버, 닉네임, 프로필이미지를 주는 메소드 사용
-			UserVo otherUser = userService.getUser(nickname);
-			int userNo = otherUser.getUserNo();
-			model.addAttribute("otherUser", otherUser);
-			
-			//해당유저 넘버를 주면 좋아요한 서평을 출력하는 메소드
-			List<MybookVo> like1 = mybookService.likereview(userNo);
-			model.addAttribute("like1", like1);
-			
-			//해당유저 넘버를 주면 좋아요한 서평리스트를 출력하는 메소드+해당유저의 서평 총 갯수 출력
-			List<MybookVo> likelist = mybookService.likelist(userNo);
-			model.addAttribute("likelist", likelist);
-			
-			//해당유저 넘버를 주면 좋아요한 플레이리스트를 출력하는 메소드
-			List<PlaylistVo> likeplay = playlistService.likelist(userNo);
-			model.addAttribute("likeplay", likeplay);
-			
-			//해당유저넘버를 주면 좋아요한 책 목록을 출력하는 메소드
-			List<BookmarkVo> get5book = bookmarkService.get5book(userNo);
-			model.addAttribute("get5book", get5book);
-		}
-
-		return "taste/taste-main";
-	}*/
-
-	
-	// 플레이리스트(main페이지)
+    // 플레이리스트(main페이지)
 	/*@RequestMapping("/{nickname}/like_playlist")
 	public String playlistmain(@PathVariable(value = "nickname") String nickname, HttpSession session, Model model) {
 
