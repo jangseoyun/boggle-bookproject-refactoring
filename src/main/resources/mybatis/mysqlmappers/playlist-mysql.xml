@@ -31,7 +31,7 @@
 
     <!-- 전체플레이리스트, 인기순 출력 5개 -->
     <!-- popularplay -->
-    <select id="popularplay" resultType="com.javaex.dto.playlist.PopularPlayListDTO">
+    <select id="popularPlaylistLimitFiv" resultType="com.javaex.dto.playlist.PopularPlayListDTO">
 		<![CDATA[
         select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
@@ -65,7 +65,7 @@
 
     <!-- 특정유저가 만든 플레이리스트 목록 -->
     <!-- makelist -->
-    <select id="makelist" resultType="com.javaex.dto.playlist.PopularPlayListDTO" parameterType="Long">
+    <select id="playListByUserLimitFiv" resultType="com.javaex.dto.playlist.PopularPlayListDTO" parameterType="Long">
 		<![CDATA[
         select p.playlist_no   playlistNo,
                p.playlist_name playlistName,
