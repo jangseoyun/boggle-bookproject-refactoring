@@ -12,7 +12,7 @@
     </select> -->
 
     <!-- 해당 플리 서평리스트 -->
-    <select id="reviewList" parameterType="map" resultType="com.javaex.vo.PlaylistFolderVo">
+    <select id="reviewList" parameterType="map" resultType="com.javaex.dto.playlistFolder.PlaylistFolderVo">
 	 	<![CDATA[
         select lst.rn                 rn,
                lst.playlistName       playlistName,
@@ -127,7 +127,7 @@
 	</select>
 
     <!-- 플리 모달 페이징 -->
-    <select id="madalListPage" parameterType="map" resultType="com.javaex.vo.PlaylistFolderVo">
+    <select id="madalListPage" parameterType="map" resultType="com.javaex.dto.playlistFolder.PlaylistFolderVo">
 	 	<![CDATA[
         select se.rn            rn,
                se.reviewNo      reviewNo,

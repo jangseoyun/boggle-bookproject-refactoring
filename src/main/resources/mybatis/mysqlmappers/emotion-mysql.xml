@@ -107,7 +107,7 @@
         ]]>
 	</select>
 
-    <select id="getMusicListByEmo" parameterType="Long" resultType="com.javaex.vo.MusicVo">
+    <select id="getMusicListByEmo" parameterType="Long" resultType="com.javaex.dto.playlist.MusicDTO">
 		<![CDATA[
         select emo.music_title musicTitle,
                emo.artist,
@@ -123,7 +123,7 @@
         ]]>
 	</select>
 
-    <select id="getMusicListByPly" parameterType="Long" resultType="com.javaex.vo.MusicVo">
+    <select id="getMusicListByPly" parameterType="Long" resultType="com.javaex.dto.playlist.MusicDTO">
 		<![CDATA[
         select innertab.music_title musicTitle,
                innertab.music_path  musicPath,
@@ -160,7 +160,7 @@
 
     <!--************** 플레이리스트 목록 가져오기 ****************-->
     <!-- (1) 내가 만든 플리 -->
-    <select id="getMyPlaylist" parameterType="Long" resultType="com.javaex.vo.PlaylistVo">
+    <select id="getMyPlaylist" parameterType="Long" resultType="com.javaex.dto.playlist.PlaylistDTO">
 		<![CDATA[
         select playlist_name    playlistName,
                playlist_no      playlistNo,
@@ -177,7 +177,7 @@
 	</select>
 
     <!-- (2) 좋아요한 플리 -->
-    <select id="getLikeMyPlaylist" parameterType="Long" resultType="com.javaex.vo.PlaylistVo">
+    <select id="getLikeMyPlaylist" parameterType="Long" resultType="com.javaex.dto.playlist.PlaylistDTO">
 		<![CDATA[
         select playlist_name        playlistName,
                playlist.playlist_no playlistNo,
@@ -207,7 +207,7 @@
 		]]>
     </insert>
 
-    <insert id="addNewPlaylistAtUser" parameterType="PlaylistVo">
+    <insert id="addNewPlaylistAtUser" parameterType="com.javaex.dto.playlist.PlaylistDTO">
 		<![CDATA[
         insert into user_playlist
         values (seq_user_playlist_no.nextval, #{userNo}, #{playlistNo})

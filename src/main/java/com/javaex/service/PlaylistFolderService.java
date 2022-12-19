@@ -2,7 +2,6 @@ package com.javaex.service;
 
 import com.javaex.dao.PlaylistFolderDao;
 import com.javaex.dto.playlistFolder.*;
-import com.javaex.vo.PlaylistFolderVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,8 @@ import java.util.Map;
 public class PlaylistFolderService { //TODO: 두잇 !
     private final PlaylistFolderDao playlistfolderDao;
 
-    /* 플레이리스트 폴더 클릭 -> 해당 플레이리스트 서평 리스트 + 페이징 */
+    /*플레이리스트 폴더 클릭 -> 해당 플레이리스트 서평 리스트 + 페이징 */
+
     public PlaylistFolderResponse playlistReviewList(Long playlistNo, int crtPage) {
         log.info("playlistReviewList + paging");
 
@@ -76,7 +76,8 @@ public class PlaylistFolderService { //TODO: 두잇 !
         return playlistFolderResponse;
     }
 
-    /* 플리 모달 페이징 */ //TODO: paging 반복 메서드로 빼기
+    /*플리 모달 페이징 */
+ //TODO: paging 반복 메서드로 빼기
     public PlaylistFolderModalResponse madalListPage(int crtPage) {
         log.info("modalListPage");
 
@@ -132,12 +133,14 @@ public class PlaylistFolderService { //TODO: 두잇 !
 
     }
 
-    /* 플리 검색 결과 가져오기 */
+/* 플리 검색 결과 가져오기*/
+
     public List<PlaylistFolderSearchDto> getSearchResult(String search) {
         return playlistfolderDao.playlistSearch(search);
     }
 
-    /* 선택 서평 등록하기 */
+/* 선택 서평 등록하기*/
+
     public int reviewsInsert(Long playlistNo, List<Integer> reviewChkArr) {
         log.info("{}: reviewsInsert", playlistNo);
         int addList = 0;
@@ -151,12 +154,14 @@ public class PlaylistFolderService { //TODO: 두잇 !
         return addList;
     }
 
-    /* 서평 삭제 */
+/* 서평 삭제*/
+
     public int reviewDelete(Long reviewNo) {
         return playlistfolderDao.reviewDelete(reviewNo);
     }
 
-    /* 로딩시 좋아요 체크 */
+/* 로딩시 좋아요 체크*/
+
     public int checkLike(Long playlistNo, Long userNo) {
         Map<String, Long> likeMap = new HashMap<>();
         likeMap.put("playlistNo", playlistNo);
@@ -166,7 +171,8 @@ public class PlaylistFolderService { //TODO: 두잇 !
         return checkLike;
     }
 
-    /* 해당 플리 좋아요 취소 */
+    /* 해당 플리 좋아요 취소*/
+
     public int playlistUnlike(PlaylistLikeDto playlistLikeDto) {
         int unlikeResult = playlistfolderDao.playlistUnlike(playlistLikeDto);
         return unlikeResult;

@@ -2,8 +2,8 @@ package com.javaex.dao;
 
 import com.javaex.dto.playlistFolder.PlaylistCoverDto;
 import com.javaex.dto.playlistFolder.PlaylistFolderSearchDto;
+import com.javaex.dto.playlistFolder.PlaylistFolderVo;
 import com.javaex.dto.playlistFolder.PlaylistLikeDto;
-import com.javaex.vo.PlaylistFolderVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;

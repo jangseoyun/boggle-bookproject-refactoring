@@ -8,17 +8,17 @@
         <result property="userNo" column="userNo"/>
     </resultMap>
 
-    <select id="selectList" resultType="LikeReviewVo" parameterType="int">
+    <select id="selectList" resultType="com.javaex.dto.likeReviews.LikeReviewDto" parameterType="int">
 		<![CDATA[
         select r.review_no                            reviewNo,
                b.book_title                           bookTitle,
                b.book_no                              bookNo,
                r.user_no                              userNo,
-               r.nickname,
+               r.nickname                             nickname,
                r.review_content                       reviewContent,
                r.style_no                             styleNo,
                r.emo_name                             emoName,
-               IFNULL(r.likecnt, 0)                   likecnt,
+               IFNULL(r.likecnt, 0)                   likeCnt,
                date_format(r.review_date, '%Y/%m/%d') reviewDate
         from (select r.review_no,
                      ru.likecnt,
@@ -70,14 +70,14 @@
 
     <!-- like -->
     <insert id="reviewLike" parameterType="map">
-		<selectKey keyProperty="review_user_no" resultType="Long" order="BEFORE">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-		<![CDATA[
+        <selectKey keyProperty="review_user_no" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        <![CDATA[
         insert into review_user
         values (#{reviewUserNo}, #{userNo}, #{reviewNo}, now())
         ]]>
-	</insert>
+    </insert>
 
     <!-- dislike -->
     <delete id="reviewDislike" parameterType="map">
@@ -90,7 +90,8 @@
 	</delete>
 
     <!-- checkLikeTotalCount -->
-    <select id="checkLikeTotalCount" resultType="com.javaex.dto.likeReviews.ReviewLikeTotalCountResult" parameterType="Long">
+    <select id="checkLikeTotalCount" resultType="com.javaex.dto.likeReviews.ReviewLikeTotalCountResult"
+            parameterType="Long">
 		<![CDATA[
         select r.review_no          reviewNo,
                r.user_no            reviewByUserNo,
@@ -210,7 +211,7 @@
 
     <!-- 유저 n번이 좋아요한 서평리스트 -->
     <!-- likelist -->
-    <select id="likelist" resultType="LikeReviewVo" parameterType="int">
+    <select id="likelist" resultType="com.javaex.dto.likeReviews.LikeReviewDto" parameterType="int">
 		<![CDATA[
         select r.reviewLikeDate,
                r.reviewNo,
@@ -290,7 +291,7 @@
 
     <!-- 유저 n번의 서평 총 갯수 : likecheck는 그냥 임의로 갖다 씀 -->
     <!-- reviewcnt -->
-    <select id="reviewcnt" resultType="LikeReviewVo" parameterType="int">
+    <select id="reviewcnt" resultType="com.javaex.dto.likeReviews.LikeReviewDto" parameterType="int">
 		<![CDATA[
         select count(review_no) likecheck
         from review

@@ -5,8 +5,8 @@ import com.javaex.dto.main.AddPlayListRequest;
 import com.javaex.dto.main.AddPlayListResponse;
 import com.javaex.dto.main.MainReviewByEmoRequest;
 import com.javaex.dto.main.ToggleReviewLikeResponse;
-import com.javaex.vo.MusicVo;
-import com.javaex.vo.PlaylistVo;
+import com.javaex.dto.playlist.MusicDTO;
+import com.javaex.dto.playlist.PlaylistDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class MainService {
         log.info("getReviewListByEmo");
 
         List<Map<String, Object>> reviewList = new ArrayList<>();
-        List<MusicVo> musicList = new ArrayList<>();
+        List<MusicDTO> musicList = new ArrayList<>();
 
         if (mainReviewByEmoRequest.getEmoNo() != null) {//감정 태그 선택
             log.info("list sort by emotion");
@@ -63,7 +63,7 @@ public class MainService {
     public Map<String, Object> beforeLoginPlaylist() {
         // emoNo, playlistNo 둘 다 null인 경우 (userNo 존재 여부 상관없이) 메인 자동 재생
         List<Map<String, Object>> reviewList = new ArrayList<>();
-        List<MusicVo> musicList = new ArrayList<>();
+        List<MusicDTO> musicList = new ArrayList<>();
 
         log.info("default list sort by random");
         Long totalEmoTagCnt = mainDao.getTotalEmoTagCnt();
@@ -77,11 +77,11 @@ public class MainService {
         return map;
     }
 
-    public List<PlaylistVo> getMyPlaylist(Long userNo) {
-        List<PlaylistVo> playlist = mainDao.getMyPlaylist(userNo); // playlistNo, playlistName
-        List<PlaylistVo> likeMyPlaylist = mainDao.getLikeMyPlaylist(userNo);
+    public List<PlaylistDTO> getMyPlaylist(Long userNo) {
+        List<PlaylistDTO> playlist = mainDao.getMyPlaylist(userNo); // playlistNo, playlistName
+        List<PlaylistDTO> likeMyPlaylist = mainDao.getLikeMyPlaylist(userNo);
 
-        List<PlaylistVo> myPlaylist = new ArrayList<>();
+        List<PlaylistDTO> myPlaylist = new ArrayList<>();
         myPlaylist.addAll(playlist);
         myPlaylist.addAll(likeMyPlaylist);
 
@@ -90,10 +90,10 @@ public class MainService {
 
     public List<Map<String, Object>> getMyPlaylistModal(Long userNo, Long reviewNo) { // userNo, reviewNo
         // 리스트 받기
-        List<PlaylistVo> myPlaylist1 = mainDao.getMyPlaylist(userNo); // playlistNo, playlistName
-        List<PlaylistVo> myPlaylist2 = mainDao.getLikeMyPlaylist(userNo);
+        List<PlaylistDTO> myPlaylist1 = mainDao.getMyPlaylist(userNo); // playlistNo, playlistName
+        List<PlaylistDTO> myPlaylist2 = mainDao.getLikeMyPlaylist(userNo);
 
-        List<PlaylistVo> myPlaylist = new ArrayList<>();
+        List<PlaylistDTO> myPlaylist = new ArrayList<>();
         myPlaylist.addAll(myPlaylist1);
         myPlaylist.addAll(myPlaylist2);
 
@@ -101,7 +101,7 @@ public class MainService {
         List<Map<String, Object>> modalPlaylist = new ArrayList<>();
 
         // 전에 저장했는지 여부 확인
-        for (PlaylistVo pvo : myPlaylist) {
+        for (PlaylistDTO pvo : myPlaylist) {
             //TODO : 객체로 만들기
             Map<String, Object> map = new HashMap<>();
 
@@ -139,6 +139,10 @@ public class MainService {
         log.info("addNewPlaylist");
         int resultCode = mainDao.addNewPlaylist(addPlayListRequest);
         return new AddPlayListResponse(resultCode);
+    }
+
+    public int addReviewToPly(Map<String, Object> addPlaylistParam) {
+        return mainDao.addReviewToPly(addPlaylistParam);
     }
 
     public ToggleReviewLikeResponse toggleReviewLike(Long userNo, Long reviewNo) {

@@ -1,6 +1,5 @@
 package com.javaex.dto.playlistFolder;
 
-import com.javaex.vo.PlaylistFolderVo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

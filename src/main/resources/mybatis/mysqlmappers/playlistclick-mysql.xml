@@ -3,7 +3,7 @@
 <mapper namespace="com.javaex.dao.PlaylistClickDao">
 
     <!-- likePlayList -->
-    <select id="likePlayList" resultType="com.javaex.dto.clickPlaylist.LikePlayListDto" parameterType="Long">
+    <select id="likePlayList" resultType="com.javaex.dto.playlist.LikePlaylistDto" parameterType="Long">
 		<![CDATA[
         select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
@@ -30,7 +30,7 @@
 	</select>
 
     <!-- popularplay -->
-    <select id="popularPlayList" resultType="com.javaex.dto.clickPlaylist.PlayListDto">
+    <select id="popularPlayList" resultType="com.javaex.dto.clickPlaylist.ClickPlayListDto">
 		<![CDATA[
         select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
@@ -63,7 +63,7 @@
 
     <!-- 특정유저가 만든 플레이리스트 목록 -->
     <!-- playListByUser -->
-    <select id="playListByUser" resultType="com.javaex.dto.clickPlaylist.PlayListDto" parameterType="Long">
+    <select id="playListByUser" resultType="com.javaex.dto.clickPlaylist.ClickPlayListDto" parameterType="Long">
 		<![CDATA[
         select p.likeuser      likeUserNo,
 			   p.playlist_no   playlistNo,

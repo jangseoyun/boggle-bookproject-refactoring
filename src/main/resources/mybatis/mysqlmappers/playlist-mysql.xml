@@ -5,7 +5,7 @@
     <!-- likelist -->
     <select id="previewPlaylistLimitFiv" resultType="com.javaex.dto.playlist.LikePlaylistDto" parameterType="Long">
 		<![CDATA[
-        select p.likeuser likeUserNo,
+        select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
                p.playlist_date playlistDate,
                p.playlist_name playlistName,
@@ -31,14 +31,14 @@
 
     <!-- 전체플레이리스트, 인기순 출력 5개 -->
     <!-- popularplay -->
-    <select id="popularplay" resultType="PlaylistVo">
+    <select id="popularplay" resultType="com.javaex.dto.playlist.PopularPlayListDTO">
 		<![CDATA[
-        select p.likeuser,
+        select p.likeuser      likeUserNo,
                p.playlist_no   playlistNo,
                p.playlist_name playlistName,
-               p.emo_no        emoNo,
+               p.emo_no        emotionNo,
                p.makeuser      userNo,
-               p.nickname
+               p.nickname      nickname
         from (select up.user_no likeuser,
                      up.playlist_no,
                      p.playlist_date,
@@ -65,7 +65,7 @@
 
     <!-- 특정유저가 만든 플레이리스트 목록 -->
     <!-- makelist -->
-    <select id="makelist" resultType="PlaylistVo" parameterType="int">
+    <select id="makelist" resultType="com.javaex.dto.playlist.PopularPlayListDTO" parameterType="Long">
 		<![CDATA[
         select p.playlist_no   playlistNo,
                p.playlist_name playlistName,

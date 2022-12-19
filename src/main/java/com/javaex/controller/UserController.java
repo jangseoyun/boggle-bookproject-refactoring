@@ -1,13 +1,12 @@
 package com.javaex.controller;
 
 import com.javaex.dto.user.JoinDto;
-import com.javaex.dto.user.UserResponse;
 import com.javaex.dto.user.LoginRequest;
 import com.javaex.dto.user.LoginResponse;
+import com.javaex.dto.user.UserResponse;
 import com.javaex.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

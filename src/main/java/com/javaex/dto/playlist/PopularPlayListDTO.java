@@ -1,4 +1,4 @@
-package com.javaex.dto.clickPlaylist;
+package com.javaex.dto.playlist;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikePlayListDto {
+public class PopularPlayListDTO {
     private Long likeUserNo;
     private Long playlistNo;
-    private String playlistDate;
     private String playlistName;
-    private Long emoNo;
-    private Long writeUserNo;
+    private Long emotionNo;
+    private Long userNo;
     private String nickname;
 }

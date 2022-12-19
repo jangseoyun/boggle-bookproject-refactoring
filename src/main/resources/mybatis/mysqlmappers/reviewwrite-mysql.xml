@@ -72,14 +72,17 @@
         ]]>
     </select>
 
-    <insert id="addGenre" parameterType="map">
+    <insert id="addGenre" parameterType="String">
+        <selectKey keyProperty="genreNo" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
 		<![CDATA[
         insert into genre
         values (#{genreNo}, #{genreName})
         ]]>
 	</insert>
 
-    <insert id="addBook" parameterType="com.javaex.dto.reviewwrite.ReviewAddRequest">
+    <insert id="addBook" parameterType="com.javaex.dto.reviewwrite.BookDto">
         <selectKey keyProperty="bookNo" resultType="Long" order="BEFORE">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -208,7 +211,7 @@
         ]]>
 	</select>
 
-    <update id="modifyReview" parameterType="map">
+    <update id="modifyReview" parameterType="com.javaex.dto.reviewwrite.ReviewModifyRequest">
 		<![CDATA[
         update review
         set review_content = #{reviewContent},

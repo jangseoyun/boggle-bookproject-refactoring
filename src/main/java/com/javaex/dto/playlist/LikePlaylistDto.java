@@ -13,6 +13,6 @@ public class LikePlaylistDto {
     private String playlistDate;
     private String playlistName;
     private Long emoNo;
-    private Long userNo;
+    private Long writeUserNo;
     private String nickname;
 }

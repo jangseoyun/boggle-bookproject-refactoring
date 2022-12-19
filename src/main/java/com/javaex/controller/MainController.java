@@ -35,6 +35,7 @@ public class MainController {
     }
 
     /*메인 서평 플레이*/
+
     @GetMapping("/play")
     public ResponseEntity getReviewListByEmo(@RequestBody MainReviewByEmoRequest mainReviewByEmoRequest) {
         log.info("reuqest: {}", mainReviewByEmoRequest);

@@ -337,7 +337,7 @@
 
     <!-- 유저 n번의 서평 총 갯수 : likecheck는 그냥 임의로 갖다 씀 -->
     <!-- reviewcnt -->
-    <select id="reviewcnt" resultType="MybookVo" parameterType="int">
+    <select id="reviewcnt" resultType="Long" parameterType="Long">
 		<![CDATA[
         select count(review_no) likecheck
         from review

@@ -5,7 +5,6 @@ import com.javaex.dto.playlistFolder.PlaylistFolderResponse;
 import com.javaex.dto.playlistFolder.PlaylistFolderSearchDto;
 import com.javaex.dto.playlistFolder.PlaylistLikeDto;
 import com.javaex.service.PlaylistFolderService;
-import com.javaex.vo.PlaylistFolderVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

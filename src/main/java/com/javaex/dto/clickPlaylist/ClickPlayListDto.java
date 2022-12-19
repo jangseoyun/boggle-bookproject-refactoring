@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayListDto {
+public class ClickPlayListDto {
     private Long likeUserNo;
     private Long playlistNo;
     private String playlistName;
